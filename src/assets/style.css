@@ -1,0 +1,40 @@
+.flex-container-space-between {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-container {
+  display: flex;
+}
+
+.column {
+  display: block;
+  flex-direction: column;
+}
+
+#decade-text {
+  font-size: 5em;
+  font-weight: bold;
+  margin: 0;
+}
+
+.star-icon {
+  max-width: 20px; /* Maximum width */
+  max-height: 20px; /* Maximum height */
+}
+
+.centered-table {
+  display: flex;
+  justify-content: center;
+}
+
+/* For the recommendations */
+.recommendations-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.recommendation {
+  text-align: center;
+}
