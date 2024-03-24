@@ -19,13 +19,62 @@
 }
 
 .star-icon {
-  max-width: 20px; /* Maximum width */
-  max-height: 20px; /* Maximum height */
+  max-width: 20px;
+  max-height: 20px;
 }
 
 .centered-table {
   display: flex;
   justify-content: center;
+}
+
+/* For the timeline */
+.timeline-container {
+  position: relative;
+  width: 50%;
+  height: 400px;
+  overflow-y: auto;
+}
+
+.timeline-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: 20px; /* Adjust spacing from the timeline */
+  padding-left: 20px; /* Adjust spacing for the timeline line */
+}
+
+.timeline-year {
+  position: absolute;
+  left: -40px; /* Adjust positioning of the year */
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: bold;
+  width: 40px;
+  text-align: center;
+  z-index: 1; /* Ensure year is above timeline line */
+}
+
+.timeline-song {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #aaa; /* Adjust border color */
+  border-radius: 5px; /* Adjust border radius */
+  margin-right: 20px; /* Adjust spacing between timeline items */
+  background-color: #f9f9f9; /* Adjust background color */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.timeline-line {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px; /* Adjust width of the timeline line */
+  background-color: #aaa; /* Adjust color of the timeline line */
+  z-index: 0; /* Ensure line is behind timeline items */
 }
 
 /* For the recommendations */
@@ -37,4 +86,8 @@
 
 .recommendation {
   text-align: center;
+}
+
+.recommendations-column {
+  width: 25;
 }
