@@ -52,10 +52,17 @@ class Helper:
     def read_data(self, path):
         df = pd.read_csv(path)
         numerical_columns = df.select_dtypes(include=['float64', 'int64'])
-        scaler = MinMaxScaler()
-        normalized_data = scaler.fit_transform(numerical_columns)
-        df_normalized = pd.DataFrame(normalized_data, columns=numerical_columns.columns, index=df.index)
-        df.update(df_normalized)
+        #Normalisation par la moyenne
+        for column in numerical_columns:
+            col_mean = df[column].mean()
+            col_range = df[column].max() - df[column].min()
+            if col_range != 0:  # To avoid division by zero
+                df[column] = (df[column] - col_mean) / col_range
+
+        # scaler = MinMaxScaler()
+        # normalized_data = scaler.fit_transform(numerical_columns)
+        # df_normalized = pd.DataFrame(normalized_data, columns=numerical_columns.columns, index=df.index)
+        # df.update(df_normalized)
         return df
 
  
