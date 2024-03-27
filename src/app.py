@@ -16,6 +16,7 @@ app.title = 'Spotify Song Recommender'
 # Define layout
 app.layout = html.Div([
     show_buttons(),
-    html.Div(id='show_top_10')
+    html.Div(id='show_top_10'),
+    html.Div(id='btn-clicked-style')
 ])
 
