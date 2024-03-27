@@ -3,17 +3,23 @@ from dash import State
 import dash_html_components as html
 from dash import callback, Input, Output
 from dash.exceptions import PreventUpdate
-
-
-
-
-top_songs = ["Chanson 1", "Chanson 2", "Chanson 3", "Chanson 4", "Chanson 5", "Chanson 6", "Chanson 7", "Chanson 8", "Chanson 9", "Chanson 10"]
-top_artists = ["Artiste 1", "Artiste 2", "Artiste 3", "Artiste 4", "Artiste 5", "Artiste 6", "Artiste 7", "Artiste 8", "Artiste 9", "Artiste 10"]
-top_playlists = ["Playlist 1", "Playlist 2", "Playlist 3", "Playlist 4", "Playlist 5", "Playlist 6", "Playlist 7", "Playlist 8", "Playlist 9", "Playlist 10"]
+from helpers import Helper
 
 
 attributes = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness', 'loudness', 'speechiness', 'tempo', 'valence']
 
+dict_pref = {
+    'sous_genres' : ['trap','neo soul','tropical'],
+    'artistes': ['Ed Sheeran','Metallica','Drake']
+}
+
+helper = Helper('../data/spotify_songs.csv')
+
+def getTopSongs():
+    helper = Helper('./data/spotify_songs.csv')
+    recommendations_df, mean_pref_values = helper.generate_recommendations_df(dict_pref, recommendation_type='chansons')
+    top_songs = recommendations_df['danceability'].head(10)
+    return top_songs
 
 @callback(
         Output('show_top_10', 'children'),
@@ -23,7 +29,7 @@ attributes = ['acousticness', 'danceability', 'energy', 'instrumentalness', 'liv
 )
 def show_top_10(btn_songs, btn_artists, btn_playlists):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-
+  
     if 'btn-songs' in changed_id:
         return show_top_songs()
     elif 'btn-artists' in changed_id:
@@ -64,6 +70,8 @@ def show_buttons():
 
 # TODO : Add a callback for the hover on the song
 def show_top_songs():
+    recommendations_df, mean_pref_values = helper.generate_recommendations_df(dict_pref, recommendation_type='chansons')
+    top_songs = recommendations_df['track_name'].tolist()
     return html.Div([
         html.H2("Recommandations de chansons", className='top-title'),
         html.Ul([
@@ -77,6 +85,8 @@ def show_top_songs():
 
 # TODO : Add a callback for the hover on the artist
 def show_top_artists():
+    recommendations_df, mean_pref_values = helper.generate_recommendations_df(dict_pref, recommendation_type='artistes')
+    top_artists = recommendations_df['track_artist'].tolist()
     return html.Div([
         html.H2("Recommandations d'artistes", className='top-title'),
         html.Ul([
@@ -89,6 +99,8 @@ def show_top_artists():
 
 # TODO : Add a callback for the hover on the playlist
 def show_top_playlists():
+    recommendations_df, mean_pref_values = helper.generate_recommendations_df(dict_pref, recommendation_type='playlist')
+    top_playlists = recommendations_df['playlist_name'].tolist()
     return html.Div([
         html.H2("Recommandations de playlists", className='top-title'),
         html.Ul([

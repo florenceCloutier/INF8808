@@ -123,6 +123,6 @@ class Helper:
         mean_pref_values = {}
         for criteria in criterias:            
             mean_pref_values[criteria] = df_compare[criteria].mean()
-        return df_compare, mean_pref_values
+        return df_compare.reset_index(), mean_pref_values
 
 # %%
