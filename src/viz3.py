@@ -43,23 +43,15 @@ def update_button_style(btn_songs_clicks, btn_artists_clicks, btn_playlists_clic
     ctx = dash.callback_context
     changed_id = ctx.triggered[0]['prop_id'].split('.')[0]
     btn_styles = [{'font-size':30,'padding':20,'width':200},{'font-size':30,'padding':20,'width':200},{'font-size':30,'padding':20,'width':200}]
-
-    if changed_id == 'btn-songs':
-        btn_styles[0]['background-color'] = '#90D26D'
-        btn_styles[1]['background-color'] = None
-        btn_styles[2]['background-color'] = None
-    elif changed_id == 'btn-artists':
-        btn_styles[0]['background-color'] = None
-        btn_styles[1]['background-color'] = '#90D26D'
-        btn_styles[2]['background-color'] = None
-    elif changed_id == 'btn-playlists':
-        btn_styles[0]['background-color'] = None
-        btn_styles[1]['background-color'] = None
-        btn_styles[2]['background-color'] = '#90D26D'
-    else:
-        btn_styles[0]['background-color'] = '#90D26D'
-        btn_styles[1]['background-color'] = None
-        btn_styles[2]['background-color'] = None
+    
+    btn_styles[0]['background-color'] = '#1db954' if changed_id == 'btn-songs' else '#b3b3b3'
+    btn_styles[1]['background-color'] = '#1db954' if changed_id == 'btn-artists' else '#b3b3b3'
+    btn_styles[2]['background-color'] = '#1db954' if changed_id == 'btn-playlists' else '#b3b3b3'
+    
+    if changed_id == '':
+        btn_styles[0]['background-color'] = '#1db954'
+    
+        
     return btn_styles
 
 def show_buttons():
@@ -73,11 +65,12 @@ def show_buttons():
 # TODO : Add a callback for the hover on the song
 def show_top_songs():
     return html.Div([
-        html.H2("Recommandations de chansons"),
+        html.H2("Recommandations de chansons", className='top-title'),
         html.Ul([
-            html.Li(song, 
+            html.Li(song,
+                    className='list',
                     id={'type':'li','index':idx}, 
-                    style={'font-size':30,'padding':20,'list-style-type':'none'}) for idx,song in enumerate(top_songs)
+                   ) for idx,song in enumerate(top_songs)
             ]) 
             ])
 
@@ -85,21 +78,23 @@ def show_top_songs():
 # TODO : Add a callback for the hover on the artist
 def show_top_artists():
     return html.Div([
-        html.H2("Recommandations d'artistes"),
+        html.H2("Recommandations d'artistes", className='top-title'),
         html.Ul([
             html.Li(artist,
+                    className='list',
                     id={'type':'li','index':idx}, 
-                    style={'font-size':30,'padding':20,'list-style-type':'none'}) for idx,artist in enumerate(top_artists)
+                   ) for idx,artist in enumerate(top_artists)
             ]) 
-            ])
+        ])
 
 # TODO : Add a callback for the hover on the playlist
 def show_top_playlists():
     return html.Div([
-        html.H2("Recommandations de playlists"),
+        html.H2("Recommandations de playlists", className='top-title'),
         html.Ul([
-            html.Li(playlist, 
-                     id={'type':'li','index':idx}, style={'font-size':30,'padding':20,'list-style-type':'none'}) for idx,playlist in enumerate(top_playlists)
+            html.Li(playlist,
+                    className='list',
+                    id={'type':'li','index':idx}) for idx,playlist in enumerate(top_playlists)
             ]) 
-            ])
+        ])
 

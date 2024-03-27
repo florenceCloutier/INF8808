@@ -177,3 +177,23 @@ body {
     padding: 10px;
     z-index: 2;
 }
+
+.list {
+    font-size: 25px;
+    padding: 20px;
+    list-style-type: none;
+    color: var(--spotify-white);
+}
+
+.button-background-active {
+    background-color: var(--spotify-green);
+}
+
+.button-background-inactive {
+    background-color: var(--spotify-dark-grey);
+}
+
+.top-title {
+    font-size: 30px;
+    color: var(--spotify-white);
+}
