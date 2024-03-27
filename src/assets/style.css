@@ -1,3 +1,14 @@
+:root {
+  --spotify-black: #191414;
+  --spotify-green: #1db954;
+  --spotify-light-green: #1ed760;
+  --spotify-dark-green: #128748;
+  --spotify-red: #e22128;
+  --spotify-light-grey: #b3b3b3;
+  --spotify-dark-grey: #282828;
+  --spotify-white: #ffffff;
+}
+
 @font-face {
   font-family: "SpotifyFont";
   src: url("fonts/Metropolis-SemiBold.otf");
