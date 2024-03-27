@@ -82,14 +82,14 @@ def getDecadeContentComponents(songs, artists, genres):
 def getTimelineComponent(songs, years, star_song, song_details):
     timeline_items = []
 
-    # Create a vertical timeline item for each year and its associated song
+
     for song, year, details in zip(songs, years, song_details):
         timeline_item_content = [
             html.Div(year, className='timeline-year'),
             html.Div(song, className='timeline-song', title=details)
         ]
 
-        # Add the star image or a transparent div to the timeline item
+     
         if song == star_song:
             timeline_item_content.append(html.Img(src="assets/star.png", className="star-icon"))
         else:
@@ -98,7 +98,7 @@ def getTimelineComponent(songs, years, star_song, song_details):
         timeline_item = html.Div(timeline_item_content, className='timeline-item')
         timeline_items.append(timeline_item)
 
-    # Wrap all timeline items in a container
+
     timeline_container = html.Div(timeline_items, className='timeline-container')
 
     return timeline_container
