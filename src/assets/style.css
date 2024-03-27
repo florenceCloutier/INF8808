@@ -195,5 +195,6 @@ body {
 
 .top-title {
     font-size: 30px;
+    padding: 10px;
     color: var(--spotify-white);
 }
