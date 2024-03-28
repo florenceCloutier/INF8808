@@ -3,6 +3,9 @@ import dash
 from dash import callback, Input, Output
 from dash import State
 
+maxYear = 2019
+minYear = 1970
+
 @callback(
     Output('viz4-container', 'children'),
     [Input('generate-decade-button', 'n_clicks'), Input('generate-decade-button-2', 'n_clicks')],
@@ -37,14 +40,18 @@ explorationString2 = "goûts musicaux pour la décennie:"
 incontournableString = "Vos incontournables"
 
 def getRecommendationsForDecade(startYear, endYear):
+    # Only show the buttons if can go up or down.
+    buttonDownVisible = "visible" if startYear > minYear else "hidden"
+    buttonUpVisible = "visible" if endYear < maxYear else "hidden"
     
-    # TODO - Get the recommendations from the helper functions
     return html.Div(id="viz4-container", className="column",children = [
         html.Div(id="viz4", children = [
             getVisualisation4Component(startYear, endYear),
         ]),
-        html.Button('▼', id='generate-decade-button', className='generate-decade-button', value=f'{startYear-10}-{endYear-10}'),
-        html.Button('▲', id='generate-decade-button-2', className='generate-decade-button', value=f'{startYear+10}-{endYear+10}')    
+        html.Div(className="decade-button-container", children = [
+            html.Button('▼', id='generate-decade-button', className='generate-decade-button', value=f'{startYear-10}-{endYear-10}', style={'visibility': buttonDownVisible}),
+            html.Button('▲', id='generate-decade-button-2', className='generate-decade-button', value=f'{startYear+10}-{endYear+10}', style={'visibility': buttonUpVisible})        
+        ]),
 ])
     
 def getVisualisation4Component(startYear, endYear):
@@ -68,6 +75,13 @@ def getVisualisation4Component(startYear, endYear):
         ])
     
 def getDecadeContentComponents(songs, artists, genres):
+    
+    # TODO - Get the recommendations from the helper functions
+    # songs = helper.getTopSongsForDecade(startYear, endYear)
+    # songsDetails = helper.getTopSongsDetailsForDecade(startYear, endYear)
+    # artists = helper.getTopArtistsForDecade(startYear, endYear)
+    # genres = helper.getTopGenresForDecade(startYear, endYear)
+    
     return html.Div(className="flex-container-space-between", children=[
         getTimelineComponent(songs, years, "Imagine", ["Details for song A", "Details for song B", "Details for song C", "Details for song D", "Details for song E", "Details for song F", "Details for song G", "Details for song H", "Details for song I", "Details for song J"]),
         html.Div(className="flex-container", style={'width': '50%'}, children=[
@@ -85,7 +99,6 @@ def getTimelineComponent(songs, years, star_song, song_details):
             html.Div(year, className='timeline-year'),
             html.Div(song, className='timeline-song', title=details)
         ]
-
      
         if song == star_song:
             timeline_item_content.append(html.Img(src="assets/star.png", className="star-icon"))
@@ -134,7 +147,7 @@ def handleDecadeChange(n_clicks, value):
     start_year = int(start_year)
     end_year = int(end_year)
     
-    if end_year < 1970 or end_year > 2019:
+    if end_year < minYear or end_year > maxYear:
         return dash.no_update
     
     return getRecommendationsForDecade(start_year, end_year)
