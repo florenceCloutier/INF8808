@@ -5,21 +5,17 @@ from dash import State
 
 @callback(
     Output('viz4-container', 'children'),
-    [Input('generate-decade-button', 'n_clicks')],
-    [State('generate-decade-button', 'value')]
+    [Input('generate-decade-button', 'n_clicks'), Input('generate-decade-button-2', 'n_clicks')],
+    [State('generate-decade-button', 'value'), State('generate-decade-button-2', 'value')]
 )
-def generate_decade_recommendations(n_clicks, value):
-    if n_clicks is None:
+def generate_decade_recommendations(n_clicks, n_clicks2 ,value, value2):
+    ctx = dash.callback_context
+    if not ctx.triggered:
         return dash.no_update
-
-    start_year, end_year = value.split('-')
-    start_year = int(start_year)
-    end_year = int(end_year)
-    
-    if end_year < 1970 or end_year > 2019:
-        return dash.no_update
-    
-    return getRecommendationsForDecade(start_year, end_year)
+    if ctx.triggered[0]['prop_id'] == 'generate-decade-button.n_clicks':
+        return handleDecadeChange(n_clicks, value)
+    if ctx.triggered[0]['prop_id'] == 'generate-decade-button-2.n_clicks':
+        return handleDecadeChange(n_clicks2, value2)
 
 tmpTopSongs = ["Bohemian Rhapsody", "Stairway to Heaven", "Hotel California", "Imagine", "Smells Like Teen Spirit", "What's Going On", "One", "Comfortably Numb", "Like a Rolling Stone", "Hey Jude"]
             # "Bohemian Rhapsody", "Stairway to Heaven", "Hotel California", "Imagine", "Smells Like Teen Spirit", "What's Going On", "One", "Comfortably Numb", "Like a Rolling Stone", "Hey Jude",
@@ -36,7 +32,7 @@ years = [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010,
          1989, 1988, 1987, 1986, 1985, 1984, 1983, 1982, 1981, 1980,
          1979, 1978, 1977, 1976, 1975, 1974, 1973, 1972, 1971, 1970,]
 
-explorationString1 = "Exploration de vos potentielles"
+explorationString1 = "Exploration de vos potentiels"
 explorationString2 = "goûts musicaux pour la décennie:"
 incontournableString = "Vos incontournables"
 
@@ -47,7 +43,8 @@ def getRecommendationsForDecade(startYear, endYear):
         html.Div(id="viz4", children = [
             getVisualisation4Component(startYear, endYear),
         ]),
-        html.Button('▼', id='generate-decade-button', className='generate-decade-button', value=f'{startYear-10}-{endYear-10}')    
+        html.Button('▼', id='generate-decade-button', className='generate-decade-button', value=f'{startYear-10}-{endYear-10}'),
+        html.Button('▲', id='generate-decade-button-2', className='generate-decade-button', value=f'{startYear+10}-{endYear+10}')    
 ])
     
 def getVisualisation4Component(startYear, endYear):
@@ -127,3 +124,17 @@ def getListOfRecommendationsComponents(recommendations, id_suffix, width='50%'):
         className='recommendations-column',
         style={'width': width}
     )
+
+
+def handleDecadeChange(n_clicks, value):
+    if n_clicks is None:
+        return dash.no_update
+
+    start_year, end_year = value.split('-')
+    start_year = int(start_year)
+    end_year = int(end_year)
+    
+    if end_year < 1970 or end_year > 2019:
+        return dash.no_update
+    
+    return getRecommendationsForDecade(start_year, end_year)
