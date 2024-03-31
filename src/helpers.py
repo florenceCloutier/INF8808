@@ -46,9 +46,8 @@ class Helper:
             'acousticness', 'instrumentalness', 'liveness', 
             'valence', 'tempo', 'duration_ms'
         ]
-
-
-
+        self.sub_genres = self.df_data['playlist_subgenre'].unique()
+        
     def read_data(self, path):
         df = pd.read_csv(path)
         numerical_columns = df.select_dtypes(include=['float64', 'int64'])
