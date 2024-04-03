@@ -55,6 +55,9 @@ class Helper:
             'acousticness', 'instrumentalness', 'liveness', 
             'valence', 'tempo', 'duration_ms'
         ]
+        self.decade_genre_cache = pd.DataFrame()
+        self.artist_decade_cache = pd.DataFrame()
+        self.songs_decade_cache = pd.DataFrame()
 
     def read_data(self, path):
         df = pd.read_csv(path)
@@ -144,9 +147,12 @@ class Helper:
         Returns:
             DataFrame: Dataframe avec les chansons par année qui sont les plus proches du profil
         """
+        if self.songs_decade_cache.empty == False:
+            return self.songs_decade_cache
+        
         criterias = ['danceability','energy','loudness','speechiness','acousticness','instrumentalness','liveness','valence','tempo','duration_ms']
 
-        self.df_data['year'] = pd.to_datetime(self.df_data['track_album_release_date'],format='mixed').dt.year
+        self.df_data['year'] = pd.to_datetime(self.df_data['track_album_release_date'], format='%Y-%m-%d').dt.year
         df_compare = self.df_data.groupby(['track_name','track_album_name','year','track_artist','track_popularity'])[criterias].mean()
 
         user_pref_dict = self.generate_user_preferences_dict(dict_pref)
@@ -159,8 +165,9 @@ class Helper:
         df_max_similarity = df_max_similarity.drop_duplicates(subset=['year', 'similarity'])
         song_similarity = df_max_similarity.reset_index(drop=True)
         
+        self.songs_decade_cache = song_similarity
         return song_similarity
-
+    
     def generate_yearly_artist_recommendation(self,dict_pref):
         """Fonction pour générer un dataframe avec les artiste les plus similaires au profil, 
         par année, sous forme de dataframe avec les caractéristiques.
@@ -171,9 +178,12 @@ class Helper:
         Returns:
             DataFrame: Dataframe avec les artistes par année qui sont les plus proches du profil
         """
+        if self.artist_decade_cache.empty == False:
+            return self.artist_decade_cache
+        
         criterias = ['danceability','energy','loudness','speechiness','acousticness','instrumentalness','liveness','valence','tempo','duration_ms']
 
-        self.df_data['year'] = pd.to_datetime(self.df_data['track_album_release_date'],format='mixed').dt.year
+        self.df_data['year'] = pd.to_datetime(self.df_data['track_album_release_date'], format='%Y-%m-%d').dt.year
         df_compare = self.df_data.groupby(['year','track_artist'])[criterias].mean()
 
         user_pref_dict = self.generate_user_preferences_dict(dict_pref)
@@ -186,6 +196,7 @@ class Helper:
         df_max_similarity = df_max_similarity.drop_duplicates(subset=['year', 'similarity'])
         artist_similarity = df_max_similarity.reset_index(drop=True)
         
+        self.artist_cache = artist_similarity
         return artist_similarity
     
     def generate_yearly_genre_recommendation(self,dict_pref):
@@ -198,9 +209,12 @@ class Helper:
         Returns:
             DataFrame: Dataframe avec les genres par année qui sont les plus proches du profil
         """
+        if self.decade_genre_cache.empty == False:
+            return self.decade_genre_cache
+        
         criterias = ['danceability','energy','loudness','speechiness','acousticness','instrumentalness','liveness','valence','tempo','duration_ms']
 
-        self.df_data['year'] = pd.to_datetime(self.df_data['track_album_release_date'],format='mixed').dt.year
+        self.df_data['year'] = pd.to_datetime(self.df_data['track_album_release_date'], format='%Y-%m-%d').dt.year
         df_compare = self.df_data.groupby(['year','playlist_genre'])[criterias].mean()
 
         user_pref_dict = self.generate_user_preferences_dict(dict_pref)
@@ -213,5 +227,6 @@ class Helper:
         df_max_similarity = df_max_similarity.drop_duplicates(subset=['year', 'similarity'])
         genre_similarity = df_max_similarity.reset_index(drop=True)
         
+        self.decade_genre_cache = genre_similarity
         return genre_similarity
 # %%

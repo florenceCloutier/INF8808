@@ -2,9 +2,14 @@ import dash_html_components as html
 import dash
 from dash import callback, Input, Output
 from dash import State
+import helpers
+import pandas as pd
 
+helper = helpers.Helper("../data/spotify_songs.csv")
 maxYear = 2019
 minYear = 1970
+
+dict_pref_cache = None
 
 @callback(
     Output('viz4-container', 'children'),
@@ -20,33 +25,22 @@ def generate_decade_recommendations(n_clicks, n_clicks2 ,value, value2):
     if ctx.triggered[0]['prop_id'] == 'generate-decade-button-2.n_clicks':
         return handleDecadeChange(n_clicks2, value2)
 
-tmpTopSongs = ["Bohemian Rhapsody", "Stairway to Heaven", "Hotel California", "Imagine", "Smells Like Teen Spirit", "What's Going On", "One", "Comfortably Numb", "Like a Rolling Stone", "Hey Jude"]
-            # "Bohemian Rhapsody", "Stairway to Heaven", "Hotel California", "Imagine", "Smells Like Teen Spirit", "What's Going On", "One", "Comfortably Numb", "Like a Rolling Stone", "Hey Jude",
-            # "Let It Be", "Yesterday", "A Day in the Life", "Hallelujah", "Blowin' in the Wind", "The Times They Are a-Changin'", "Sweet Child o' Mine", "Under the Bridge", "Californication", "Lose Yourself",
-            # "The Real Slim Shady", "Without Me", "In the End", "Numb", "Faint", "Breaking the Habit", "Somewhere I Belong", "Crawling", "One Step Closer", "A Place for My Head",
-            # "Forgotten", "With You", "Runaway", "By Myself", "Don't Stay", "Go", "Lying from You", "Hit the Floor", "Easier to Run", "Faint"]
-
-tmpTopArtists = ["Artiste A", "Artiste B", "Artiste C", "Artiste D", "Artiste E"]
-tmpTopGenres = ["Genre A", "Genre B", "Genre C", "Genre D", "Genre E"]
-
-years = [2019, 2018, 2017, 2016, 2015, 2014, 2013, 2012, 2011, 2010,
-         2009, 2008, 2007, 2006, 2005, 2004, 2003, 2002, 2001, 2000,
-         1999, 1998, 1997, 1996, 1995, 1994, 1993, 1992, 1991, 1990,
-         1989, 1988, 1987, 1986, 1985, 1984, 1983, 1982, 1981, 1980,
-         1979, 1978, 1977, 1976, 1975, 1974, 1973, 1972, 1971, 1970,]
-
 explorationString1 = "Exploration de vos potentiels"
 explorationString2 = "goûts musicaux pour la décennie:"
 incontournableString = "Vos incontournables"
 
-def getRecommendationsForDecade(startYear, endYear):
+def getRecommendationsForDecade(startYear, endYear, dict_pref):
+    global dict_pref_cache
+    dict_pref_cache = None
+    if dict_pref_cache is None:
+        dict_pref_cache = dict_pref
     # Only show the buttons if can go up or down.
     buttonDownVisible = "visible" if startYear > minYear else "hidden"
     buttonUpVisible = "visible" if endYear < maxYear else "hidden"
     
     return html.Div(id="viz4-container", className="column",children = [
         html.Div(id="viz4", children = [
-            getVisualisation4Component(startYear, endYear),
+            getVisualisation4Component(startYear, endYear, dict_pref),
         ]),
         html.Div(className="decade-button-container", children = [
             html.Button('▼', id='generate-decade-button', className='generate-decade-button', value=f'{startYear-10}-{endYear-10}', style={'visibility': buttonDownVisible}),
@@ -54,7 +48,7 @@ def getRecommendationsForDecade(startYear, endYear):
         ]),
 ])
     
-def getVisualisation4Component(startYear, endYear):
+def getVisualisation4Component(startYear, endYear, dict_pref):
     
     decadeString = str(endYear) + " - " + str(startYear)
     
@@ -71,36 +65,33 @@ def getVisualisation4Component(startYear, endYear):
                     ])
                 ])
             ]),
-            getDecadeContentComponents(tmpTopSongs, tmpTopArtists, tmpTopGenres),
+            getDecadeContentComponents(dict_pref, startYear, endYear),
         ])
     
-def getDecadeContentComponents(songs, artists, genres):
-    
-    # TODO - Get the recommendations from the helper functions
-    # songs = helper.getTopSongsForDecade(startYear, endYear)
-    # songsDetails = helper.getTopSongsDetailsForDecade(startYear, endYear)
-    # artists = helper.getTopArtistsForDecade(startYear, endYear)
-    # genres = helper.getTopGenresForDecade(startYear, endYear)
-    
+def getDecadeContentComponents(dict_pref, startYear, endYear):    
     return html.Div(className="flex-container-space-between", children=[
-        getTimelineComponent(songs, years, "Imagine", ["Details for song A", "Details for song B", "Details for song C", "Details for song D", "Details for song E", "Details for song F", "Details for song G", "Details for song H", "Details for song I", "Details for song J"]),
+        getTimelineComponent(startYear, endYear, dict_pref),
         html.Div(className="flex-container", style={'width': '50%'}, children=[
-            getListOfRecommendationsComponents(artists, "artists", width='70%'),
-            getListOfRecommendationsComponents(genres, "genres", width='70%') 
+            getListOfRecommendationsComponents(get_top_artists_for_decade(startYear, endYear, dict_pref), "artist",width='70%'),
+            getListOfRecommendationsComponents(get_top_genre_for_decade(startYear, endYear, dict_pref), "genres", width='70%') 
         ])
     ])
 
-def getTimelineComponent(songs, years, star_song, song_details):
+
+def getTimelineComponent(startYear, endYear, dict_pref):
     timeline_items = []
 
+    songsInfo = get_top_songs_for_decade(startYear, endYear, dict_pref)
 
-    for song, year, details in zip(songs, years, song_details):
+    for song_name, year, isBest, artist, album_name, similarity in songsInfo:
+        details = "This song was released in " + str(year) + " by " + artist + " in the album " + album_name + ". This song matches your profile by " + str(round(similarity*100, 2)) + "%"
+        
         timeline_item_content = [
             html.Div(year, className='timeline-year'),
-            html.Div(song, className='timeline-song', title=details)
+            html.Div(song_name, className='timeline-song', title=details)
         ]
      
-        if song == star_song:
+        if isBest:
             timeline_item_content.append(html.Img(src="assets/star.png", className="star-icon"))
         else:
             timeline_item_content.append(html.Div(className="transparent-star"))
@@ -116,16 +107,15 @@ def getTimelineComponent(songs, years, star_song, song_details):
     
 def getListOfRecommendationsComponents(recommendations, id_suffix, width='50%'): 
     recommendations_components = []
-
-    for i, recommendation in enumerate(recommendations):
-        if i == 0: # TODO - Need to specify which recommendation is the star song
+    for name, isBest in recommendations:
+        if isBest:
             recommendation_component = html.Span([
-                recommendation,
+                name,
                 html.Img(src="assets/star.png", className="star-icon")
             ])
         else:
             recommendation_component = html.Span([
-                recommendation,
+                name,
                 html.Div(className="transparent-star")
             ])
 
@@ -150,4 +140,75 @@ def handleDecadeChange(n_clicks, value):
     if end_year < minYear or end_year > maxYear:
         return dash.no_update
     
-    return getRecommendationsForDecade(start_year, end_year)
+    global dict_pref_cache 
+    if dict_pref_cache is None:
+        return dash.no_update
+    
+    return getRecommendationsForDecade(start_year, end_year, dict_pref_cache)
+
+
+# Helper functions to get the top songs
+# Needs to return an array containing a song, its year, if it is the favorite and details for each songs
+def get_top_songs_for_decade(start_year, end_year, dict_pref):
+    song_recommendations = helper.generate_yearly_song_recommendation(dict_pref)
+    songInDecade = pd.DataFrame()
+    
+    for year in range(start_year, end_year + 1):
+        yearly_data = song_recommendations[song_recommendations['year'] == year]
+        if not yearly_data.empty:
+            songInDecade = pd.concat([songInDecade, yearly_data])
+
+    # Find the entry with the highest score
+    bestSong = songInDecade.sort_values(by='similarity', ascending=False).head(1)
+    songInDecade = songInDecade.sort_values(by='year', ascending=False).head(10).reset_index(drop=True)
+    
+    songOfTheDecade = []
+    for index, row in songInDecade.iterrows():
+        isBest = row["similarity"] == bestSong["similarity"].values[0]
+        songOfTheDecade.append((row['track_name'], row['year'], isBest, row['track_artist'], row['track_album_name'], row['similarity']))
+
+    return songOfTheDecade
+
+def get_top_artists_for_decade(start_year, end_year, dict_pref):
+    artist_recommendations = helper.generate_yearly_artist_recommendation(dict_pref)
+    artistsInDecade = pd.DataFrame()
+    
+    for year in range(start_year, end_year + 1):
+        yearly_data = artist_recommendations[artist_recommendations['year'] == year]
+        if not yearly_data.empty:
+            artistsInDecade = pd.concat([artistsInDecade, yearly_data])
+    
+    # Remove duplicates
+    artistsInDecade = artistsInDecade.drop_duplicates(subset=['track_artist'])
+    
+    artistsInDecade = artistsInDecade.sort_values(by='similarity', ascending=False).head(5).reset_index(drop=True)
+    bestArtist = artistsInDecade.sort_values(by='similarity', ascending=False).head(1)
+    
+    artistsOfTheDecade = []
+    for index, row in artistsInDecade.iterrows():
+        isBest = row["similarity"] == bestArtist["similarity"].values[0]
+        artistsOfTheDecade.append((row['track_artist'], isBest))
+    print(artistsOfTheDecade)
+    return artistsOfTheDecade
+
+def get_top_genre_for_decade(start_year, end_year, dict_pref):
+    genre_recommendations = helper.generate_yearly_genre_recommendation(dict_pref)
+    genresInDecade = pd.DataFrame()
+    
+    for year in range(start_year, end_year + 1):
+        yearly_data = genre_recommendations[genre_recommendations['year'] == year]
+        if not yearly_data.empty:
+            genresInDecade = pd.concat([genresInDecade, yearly_data])
+    
+    # Remove duplicates
+    genresInDecade = genresInDecade.drop_duplicates(subset=['playlist_genre'])
+    
+    bestGenre = genresInDecade.sort_values(by='similarity', ascending=False).head(1)
+    genresInDecade = genresInDecade.sort_values(by='similarity', ascending=False).head(5).reset_index(drop=True)
+    
+    genresOfTheDecade = []
+    for index, row in genresInDecade.iterrows():
+        isBest = row["similarity"] == bestGenre["similarity"].values[0]
+        genresOfTheDecade.append((row['playlist_genre'], isBest))
+    print(genresInDecade)
+    return genresOfTheDecade
