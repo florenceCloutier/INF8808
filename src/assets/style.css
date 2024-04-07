@@ -215,3 +215,26 @@ body {
 .hover-highlight li:hover::before {
   opacity: 1;
 }
+
+/* For viz 1 */
+.title-viz1 {
+  color: var(--spotify-white);
+  text-align: center;
+  margin-right: 100px;
+}
+
+.header-viz1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.radar-chart-viz1 {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 100px;
+}

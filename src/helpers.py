@@ -75,6 +75,15 @@ class Helper:
         for criteria in criterias:            
             pref_values[criteria] = df_filtered[criteria].mean()
         return pref_values
+    
+    def generate_real_user_preferences_dict(self,dict_pref):
+        df = pd.read_csv('../data/spotify_songs.csv')
+        real_pref_values = {}
+        df_filtered = df[df['track_artist'].isin(dict_pref['artistes']) & df['playlist_subgenre'].isin(dict_pref['sous_genres'])]
+        for criteria in self.criterias:
+            real_pref_values[criteria] = df_filtered[criteria].mean()
+        return real_pref_values
+        
 
 
     def generate_average_preferences_dict(self):
@@ -124,5 +133,28 @@ class Helper:
         for criteria in criterias:            
             mean_pref_values[criteria] = df_compare[criteria].mean()
         return df_compare.reset_index(), mean_pref_values
+    
+    def getRealValuesByType(self,name,type):
+        df = pd.read_csv('../data/spotify_songs.csv')
+        if type == 'chansons':
+            df = df.groupby(['track_artist','track_name','track_popularity'])[self.criterias].mean().reset_index()
+            return df[df['track_name'] == name]
+        elif type == 'artistes':
+            real_pref_values = {}
+            df = df.groupby(['track_artist'])[self.criterias].mean().reset_index()
+            df_filtered = df[df['track_artist'] == name]
+            for criteria in self.criterias:
+               real_pref_values[criteria] = df_filtered[criteria].mean()
+            real_pref_df = pd.DataFrame.from_dict(real_pref_values,orient='index').T
+            return real_pref_df
+        elif type == 'playlist':
+            real_pref_values = {}
+            df = df.groupby(['playlist_name'])[self.criterias].mean().reset_index()
+            df_filtered = df[df['playlist_name'] == name]
+            for criteria in self.criterias:
+               real_pref_values[criteria] = df_filtered[criteria].mean()
+            real_pref_df = pd.DataFrame.from_dict(real_pref_values,orient='index').T
+            return real_pref_df
+    
 
 # %%

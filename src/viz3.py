@@ -2,9 +2,9 @@ import dash
 from dash import State
 import dash_html_components as html
 from dash import callback, Input, Output, ALL
-from dash.exceptions import PreventUpdate
 import plotly.graph_objects as go
 import json
+import dash_core_components as dcc
 from helpers import Helper
 
 
@@ -14,6 +14,23 @@ dict_pref = {
 }
 
 helper = Helper('../data/spotify_songs.csv')
+
+def show_viz3():
+    return html.Div(children=[
+        show_buttons(),
+        html.Div(children=[
+            html.Div(id='show_top_10'),
+            html.Div(id='btn-clicked-style'),
+        ],style={'width':'40%','display':'inline-block'}),
+       
+       html.Div(children=[
+            dcc.Graph(
+            id='radar-chart',
+            figure=user_preferences_chart(),
+        )
+        ],style={'width':'50%','display':'inline-block','margin-bottom':'100px'}),
+       
+    ])
 
 @callback(
         Output('show_top_10', 'children'),
@@ -153,20 +170,30 @@ def update_radar_chart(n_clicks_chansons, n_clicks_artistes, n_clicks_playlists)
     type = json.loads(prop_id.split('.')[0])['type']
     selected_index = json.loads(prop_id.split('.')[0])['index']
 
-    recommendations_df, mean_pref_values = helper.generate_recommendations_df(dict_pref, recommendation_type=type)
-    
+    recommendations_df, _ = helper.generate_recommendations_df(dict_pref, recommendation_type=type)
+
     data = recommendations_df.iloc[selected_index]
+    data_criterias  = data[3:]if type == 'chansons' else data[1:]
+   
+    name = data['track_name'] if type == 'chansons' else data['track_artist'] if type == 'artistes' else data['playlist_name']
     
+    real_values_data = helper.getRealValuesByType(name,type)
+    
+    real_values_data_criterias = real_values_data.iloc[0][3:] if type == 'chansons' else real_values_data.iloc[0]
+  
+
     fig = user_preferences_chart()
     
     fig.add_trace(go.Scatterpolar(
-        r=data[1:],
+        r=data_criterias,
         theta=helper.criterias,
-        fill='toself',
-        hoverinfo='r+theta',
+        customdata=real_values_data_criterias,
+        fill='tonext',
+        hovertemplate=get_hover_template(),
         name=data['track_name'] if type == 'chansons' else data['track_artist'] if type == 'artistes' else data['playlist_name'],
         line = dict(color='#1db954')
     ))
+
 
     return fig
     
@@ -174,12 +201,15 @@ def update_radar_chart(n_clicks_chansons, n_clicks_artistes, n_clicks_playlists)
 def user_preferences_chart():
     fig = go.Figure()
     user_pref_dict = helper.generate_user_preferences_dict(dict_pref)
+    user_pref_real = helper.generate_real_user_preferences_dict(dict_pref)
+   
     fig.add_trace(go.Scatterpolar(
         r=list(user_pref_dict.values()),
+        customdata=list(user_pref_real.values()),
         theta=helper.criterias,
-        fill='toself',
+        fill='tonext',
         name='Vos préférences',
-        hoverinfo='r+theta',
+        hovertemplate=get_hover_template(),
         line = dict(color='#e22128')
     ))
 
@@ -187,8 +217,23 @@ def user_preferences_chart():
         polar=dict(
             radialaxis=dict(
                 visible=True,
+            ),
+            angularaxis=dict(
+                color='white'
             )),
         showlegend=True,
-        paper_bgcolor='#b3b3b3',
+        legend=dict(
+            font=dict(
+                color='white'
+            )
+        ),
+        paper_bgcolor='#191414',
     )
     return fig
+
+
+def get_hover_template():
+    theta = '<b>%{theta}</b><br>'
+    customdata = '<b>%{customdata:.2f}</b><br>'
+    extra = '<extra></extra>'
+    return theta + customdata + extra
