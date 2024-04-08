@@ -23,3 +23,4 @@ app.layout = html.Div(children=[
    
 ])
 
+server = app.server

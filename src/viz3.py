@@ -13,7 +13,7 @@ dict_pref = {
     'artistes': ['Ed Sheeran','Metallica','Drake']
 }
 
-helper = Helper('../data/spotify_songs.csv')
+helper = Helper('./data/spotify_songs.csv')
 
 def show_viz3():
     return html.Div(children=[

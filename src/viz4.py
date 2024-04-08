@@ -5,7 +5,7 @@ from dash import State
 import helpers
 import pandas as pd
 
-helper = helpers.Helper("../data/spotify_songs.csv")
+helper = helpers.Helper("./data/spotify_songs.csv")
 maxYear = 2019
 minYear = 1970
 
@@ -188,7 +188,6 @@ def get_top_artists_for_decade(start_year, end_year, dict_pref):
     for index, row in artistsInDecade.iterrows():
         isBest = row["similarity"] == bestArtist["similarity"].values[0]
         artistsOfTheDecade.append((row['track_artist'], isBest))
-    print(artistsOfTheDecade)
     return artistsOfTheDecade
 
 def get_top_genre_for_decade(start_year, end_year, dict_pref):
@@ -210,5 +209,4 @@ def get_top_genre_for_decade(start_year, end_year, dict_pref):
     for index, row in genresInDecade.iterrows():
         isBest = row["similarity"] == bestGenre["similarity"].values[0]
         genresOfTheDecade.append((row['playlist_genre'], isBest))
-    print(genresInDecade)
     return genresOfTheDecade
