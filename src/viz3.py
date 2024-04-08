@@ -21,14 +21,14 @@ def show_viz3():
         html.Div(children=[
             html.Div(id='show_top_10'),
             html.Div(id='btn-clicked-style'),
-        ],style={'width':'40%','display':'inline-block'}),
+        ],style={'width':'30%','display':'inline-block'}),
        
        html.Div(children=[
             dcc.Graph(
             id='radar-chart',
             figure=user_preferences_chart(),
         )
-        ],style={'width':'50%','display':'inline-block','margin-bottom':'100px'}),
+        ],style={'width':'70%','display':'inline-block','margin-bottom':'100px',}),
        
     ])
 
@@ -72,10 +72,10 @@ def update_button_style(btn_songs_clicks, btn_artists_clicks, btn_playlists_clic
 
 def show_buttons():
     return html.Div([
-        html.Button('Chansons', id='btn-songs', n_clicks=0),
-        html.Button('Artistes', id='btn-artists', n_clicks=0),
-        html.Button('Playlists', id='btn-playlists', n_clicks=0)
-        ],style={'display':'flex','justify-content':'center','align-items':'center'})
+        html.Button('Chansons', id='btn-songs', n_clicks=0,className='buttons-viz3'),
+        html.Button('Artistes', id='btn-artists', n_clicks=0,className='buttons-viz3'),
+        html.Button('Playlists', id='btn-playlists', n_clicks=0,className='buttons-viz3')
+        ],className='buttons-viz3')
 
 
 def show_top_songs():
@@ -216,24 +216,32 @@ def user_preferences_chart():
     fig.update_layout(
         polar=dict(
             radialaxis=dict(
-                visible=True,
+                visible=False,
             ),
             angularaxis=dict(
-                color='white'
+                color='white',
+                tickfont=dict(
+                    family='SpotifyFont',
+                    size=20, 
+                    color='white'
+                )
             )),
         showlegend=True,
         legend=dict(
             font=dict(
-                color='white'
+                color='white',
+                family='SpotifyFont',
+                size=15
             )
         ),
         paper_bgcolor='#191414',
+        
     )
     return fig
 
 
 def get_hover_template():
     theta = '<b>%{theta}</b><br>'
-    customdata = '<b>%{customdata:.2f}</b><br>'
+    customdata = '<b>%{customdata:.4f}</b><br>'
     extra = '<extra></extra>'
     return theta + customdata + extra

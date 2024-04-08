@@ -25,12 +25,11 @@ def show_viz1():
         ], className='radar-chart-viz1'),
     ])
 
-
+    
 def user_preferences_chart():
     fig = go.Figure()
     user_pref_dict = helper.generate_user_preferences_dict(dict_pref)
     user_pref_real = helper.generate_real_user_preferences_dict(dict_pref)
-
    
     fig.add_trace(go.Scatterpolar(
         r=list(user_pref_dict.values()),
@@ -45,24 +44,33 @@ def user_preferences_chart():
     fig.update_layout(
         polar=dict(
             radialaxis=dict(
-                visible=True,
+                visible=False,
             ),
             angularaxis=dict(
-                color='white'
+                color='white',
+                tickfont=dict(
+                    family='SpotifyFont',
+                    size=20, 
+                    color='white'
+                )
             )),
         showlegend=True,
         legend=dict(
             font=dict(
-                color='white'
+                color='white',
+                family='SpotifyFont',
+                size=15
             )
         ),
         paper_bgcolor='#191414',
+      
+        
     )
     return fig
 
 
 def get_hover_template():
     theta = '<b>%{theta}</b><br>'
-    customdata = '<b>%{customdata:.2f}</b><br>'
+    customdata = '<b>%{customdata:.4f}</b><br>'
     extra = '<extra></extra>'
     return theta + customdata + extra

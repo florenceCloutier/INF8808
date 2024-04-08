@@ -177,12 +177,13 @@ body {
   padding: 10px;
   z-index: 2;
 }
-
+/*Viz3*/
 .list {
   font-size: 25px;
   padding: 20px;
   list-style-type: none;
   color: var(--spotify-white);
+  font-family: 'SpotifyFont';
 }
 
 .button-background-active {
@@ -197,6 +198,14 @@ body {
   font-size: 30px;
   padding: 10px;
   color: var(--spotify-white);
+  font-family: 'SpotifyFont';
+}
+
+.buttons-viz3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'SpotifyFont';
 }
 
 .hover-highlight li::before {
@@ -228,6 +237,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  font-family: 'SpotifyFont';
 }
 
 .radar-chart-viz1 {
