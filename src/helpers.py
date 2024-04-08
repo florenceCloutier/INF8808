@@ -3,53 +3,45 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from scipy.spatial import distance
 
-class Helper:
-    """ 
-        Exemple: 
-
-    dict_pref = {
-        'sous_genres' : ['trap','neo soul','tropical'],
-        'artistes': ['Ed Sheeran','Metallica','Drake']
-    }
+""" 
+    Exemple: dict_pref = {
+    'sous_genres' : ['trap','neo soul','tropical'],
+    'artistes': ['Ed Sheeran','Metallica','Drake']
+}
 
     path_name = './data/spotify_songs.csv'
 
-    help = Helper(path_name)
-    df_data = help.df_data
-
-    user_pref_dict = help.generate_user_preferences_dict(dict_pref)
-    print("User Preferences Dictionary:")
-    print(user_pref_dict)
-
-    # Generate a dictionary with average preferences across all data
-    average_pref_dict = help.generate_average_preferences_dict()
-    print("\nAverage Preferences Dictionary:")
-    print(average_pref_dict)
-
-    # Generate a DataFrame showing similarity between user preferences and subgenres
-    subgenre_similarity_df = help.generate_subgenre_similarity_df(dict_pref)
-    print("\nSubgenre Similarity DataFrame:")
-    print(subgenre_similarity_df.head()) 
-
-    recommendations_df, mean_pref_values = help.generate_recommendations_df(dict_pref, recommendation_type='chansons')
-    print("\nRecommendations DataFrame:")
-    print(recommendations_df.head()) 
-    print("\nMean Preferences Values for Recommendations:")
-    print(mean_pref_values)
-
-    print("\nYearly artist recommendation:")
-    print(help.generate_yearly_artist_recommendation(dict_pref))
-
-    print("\nYearly artist recommendation:")
-    print(help.generate_yearly_song_recommendation(dict_pref))
-
-    print("\nYearly artist recommendation:")
-    print(help.generate_yearly_genre_recommendation(dict_pref))
-
-    """
+    df_data = read_data(path_name)
     
+    Exemple d'utilisation:
+        user_pref_dict = help.generate_user_preferences_dict(user_preferences)
+        print("User Preferences Dictionary:")
+        print(user_pref_dict)
+
+        # Generate a dictionary with average preferences across all data
+        average_pref_dict = help.generate_average_preferences_dict()
+        print("\nAverage Preferences Dictionary:")
+        print(average_pref_dict)
+
+        # Generate a DataFrame showing similarity between user preferences and subgenres
+        subgenre_similarity_df = help.generate_subgenre_similarity_df(user_preferences)
+        print("\nSubgenre Similarity DataFrame:")
+        print(subgenre_similarity_df.head())  # Show the first few rows
+
+        # Generate recommendations (e.g., songs) based on user preferences
+        recommendations_df, mean_pref_values = help.generate_recommendations_df(user_preferences, recommendation_type='chansons')
+        print("\nRecommendations DataFrame:")
+        print(recommendations_df.head())  # Show the first few rows
+        print("\nMean Preferences Values for Recommendations:")
+        print(mean_pref_values)
+
+
+"""
+
+class Helper:
     def __init__(self,path):
         self.df_data = self.read_data(path)
+        self.df_initial_data = pd.read_csv('../data/spotify_songs.csv')
         self.criterias = [
             'danceability', 'energy', 'loudness', 'speechiness',
             'acousticness', 'instrumentalness', 'liveness', 
@@ -58,6 +50,8 @@ class Helper:
         self.decade_genre_cache = pd.DataFrame()
         self.artist_decade_cache = pd.DataFrame()
         self.songs_decade_cache = pd.DataFrame()
+
+
 
     def read_data(self, path):
         df = pd.read_csv(path)
@@ -85,6 +79,15 @@ class Helper:
         for criteria in criterias:            
             pref_values[criteria] = df_filtered[criteria].mean()
         return pref_values
+    
+    def generate_real_user_preferences_dict(self,dict_pref):
+        df = pd.read_csv('../data/spotify_songs.csv')
+        real_pref_values = {}
+        df_filtered = df[df['track_artist'].isin(dict_pref['artistes']) & df['playlist_subgenre'].isin(dict_pref['sous_genres'])]
+        for criteria in self.criterias:
+            real_pref_values[criteria] = df_filtered[criteria].mean()
+        return real_pref_values
+        
 
 
     def generate_average_preferences_dict(self):
@@ -133,9 +136,30 @@ class Helper:
         mean_pref_values = {}
         for criteria in criterias:            
             mean_pref_values[criteria] = df_compare[criteria].mean()
-        return df_compare, mean_pref_values
+        return df_compare.reset_index(), mean_pref_values
     
-    ## ------  Visualisation 4  -----------
+    def getRealValuesByType(self,name,type):
+        if type == 'chansons':
+            df = self.df_initial_data.groupby(['track_artist','track_name','track_popularity'])[self.criterias].mean().reset_index()
+            return df[df['track_name'] == name]
+        elif type == 'artistes':
+            real_pref_values = {}
+            df = self.df_initial_data.groupby(['track_artist'])[self.criterias].mean().reset_index()
+            df_filtered = df[df['track_artist'] == name]
+            for criteria in self.criterias:
+               real_pref_values[criteria] = df_filtered[criteria].mean()
+            real_pref_df = pd.DataFrame.from_dict(real_pref_values,orient='index').T
+            return real_pref_df
+        elif type == 'playlist':
+            real_pref_values = {}
+            df = self.df_initial_data.groupby(['playlist_name'])[self.criterias].mean().reset_index()
+            df_filtered = df[df['playlist_name'] == name]
+            for criteria in self.criterias:
+               real_pref_values[criteria] = df_filtered[criteria].mean()
+            real_pref_df = pd.DataFrame.from_dict(real_pref_values,orient='index').T
+            return real_pref_df
+
+## ------  Visualisation 4  -----------
     
     def generate_yearly_song_recommendation(self,dict_pref):
         """Fonction pour générer un dataframe avec les chansons les plus similaires au profil, 
@@ -229,4 +253,9 @@ class Helper:
         
         self.decade_genre_cache = genre_similarity
         return genre_similarity
+        
+        
+
+    
+
 # %%
