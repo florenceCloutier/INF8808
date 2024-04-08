@@ -50,7 +50,7 @@ def user_preferences_chart():
                 color='white',
                 tickfont=dict(
                     family='SpotifyFont',
-                    size=20, 
+                    size=15, 
                     color='white'
                 )
             )),
