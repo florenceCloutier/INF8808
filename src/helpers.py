@@ -41,7 +41,7 @@ from scipy.spatial import distance
 class Helper:
     def __init__(self,path):
         self.df_data = self.read_data(path)
-        self.df_initial_data = pd.read_csv('../data/spotify_songs.csv')
+        self.df_initial_data = pd.read_csv('./data/spotify_songs.csv')
         self.criterias = [
             'danceability', 'energy', 'loudness', 'speechiness',
             'acousticness', 'instrumentalness', 'liveness', 
@@ -93,7 +93,7 @@ class Helper:
         return pref_values
     
     def generate_real_user_preferences_dict(self,dict_pref):
-        df = pd.read_csv('../data/spotify_songs.csv')
+        df = self.df_initial_data
         real_pref_values = {}
         df_filtered = df[df['track_artist'].isin(dict_pref['artistes']) & df['playlist_subgenre'].isin(dict_pref['sous_genres'])]
         for criteria in self.criterias:
