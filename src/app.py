@@ -2,6 +2,7 @@ import dash
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from viz1 import show_viz1
+from viz2 import show_viz2
 from viz3 import show_viz3
 from viz4 import getRecommendationsForDecade
 
@@ -18,6 +19,7 @@ app.title = 'Spotify Song Recommender'
 
 app.layout = html.Div(children=[
     show_viz1(),
+    show_viz2(),
     show_viz3(),
     getRecommendationsForDecade(2010, 2019, dict_pref)
    
