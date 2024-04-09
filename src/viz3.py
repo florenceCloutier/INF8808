@@ -177,9 +177,11 @@ def update_radar_chart(n_clicks_chansons, n_clicks_artistes, n_clicks_playlists)
    
     name = data['track_name'] if type == 'chansons' else data['track_artist'] if type == 'artistes' else data['playlist_name']
     
-    real_values_data = helper.getRealValuesByType(name,type)
+    real_values_data = helper.get_initial_values_by_type(name,type)
     
     real_values_data_criterias = real_values_data.iloc[0][3:] if type == 'chansons' else real_values_data.iloc[0]
+    
+    values_and_desriptions = [(i, j) for i, j in zip(real_values_data_criterias, helper.descriptions)]
   
 
     fig = user_preferences_chart()
@@ -187,7 +189,7 @@ def update_radar_chart(n_clicks_chansons, n_clicks_artistes, n_clicks_playlists)
     fig.add_trace(go.Scatterpolar(
         r=data_criterias,
         theta=helper.criterias,
-        customdata=real_values_data_criterias,
+        customdata=values_and_desriptions,
         fill='tonext',
         hovertemplate=get_hover_template(),
         name=data['track_name'] if type == 'chansons' else data['track_artist'] if type == 'artistes' else data['playlist_name'],
@@ -202,10 +204,12 @@ def user_preferences_chart():
     fig = go.Figure()
     user_pref_dict = helper.generate_user_preferences_dict(dict_pref)
     user_pref_real = helper.generate_real_user_preferences_dict(dict_pref)
-   
+    
+    values_and_desriptions = [(i, j) for i, j in zip(list(user_pref_real.values()), helper.descriptions)]
+    
     fig.add_trace(go.Scatterpolar(
         r=list(user_pref_dict.values()),
-        customdata=list(user_pref_real.values()),
+        customdata=values_and_desriptions,
         theta=helper.criterias,
         fill='tonext',
         name='Vos préférences',
@@ -241,7 +245,8 @@ def user_preferences_chart():
 
 
 def get_hover_template():
-    theta = '<b>%{theta}</b><br>'
-    customdata = '<b>%{customdata:.4f}</b><br>'
-    extra = '<extra></extra>'
-    return theta + customdata + extra
+    theta = '<b style="font-family: SpotifyFont">Attribut musical: %{theta}</b><br>'
+    value = '<b style="font-family: SpotifyFont">Valeur: %{customdata[0]:.4f}</b><br>'
+    description = '<b style="font-family: SpotifyFont">Description: %{customdata[1]}</b><br>'
+    hover_template = theta + description +value + '<extra></extra>'
+    return hover_template

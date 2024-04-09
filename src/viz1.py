@@ -30,10 +30,12 @@ def user_preferences_chart():
     fig = go.Figure()
     user_pref_dict = helper.generate_user_preferences_dict(dict_pref)
     user_pref_real = helper.generate_real_user_preferences_dict(dict_pref)
-   
+    
+    values_and_desriptions = [(i, j) for i, j in zip(list(user_pref_real.values()), helper.descriptions)]
+    
     fig.add_trace(go.Scatterpolar(
         r=list(user_pref_dict.values()),
-        customdata=list(user_pref_real.values()),
+        customdata=values_and_desriptions,
         theta=helper.criterias,
         fill='tonext',
         name='Vos préférences',
@@ -50,7 +52,7 @@ def user_preferences_chart():
                 color='white',
                 tickfont=dict(
                     family='SpotifyFont',
-                    size=15, 
+                    size=20, 
                     color='white'
                 )
             )),
@@ -63,14 +65,14 @@ def user_preferences_chart():
             )
         ),
         paper_bgcolor='#191414',
-      
         
     )
     return fig
 
 
 def get_hover_template():
-    theta = '<b>%{theta}</b><br>'
-    customdata = '<b>%{customdata:.4f}</b><br>'
-    extra = '<extra></extra>'
-    return theta + customdata + extra
+    theta = '<b style="font-family: SpotifyFont">Attribut musical: %{theta}</b><br>'
+    value = '<b style="font-family: SpotifyFont">Valeur: %{customdata[0]:.4f}</b><br>'
+    description = '<b style="font-family: SpotifyFont">Description: %{customdata[1]}</b><br>'
+    hover_template = theta + description +value + '<extra></extra>'
+    return hover_template

@@ -47,6 +47,18 @@ class Helper:
             'acousticness', 'instrumentalness', 'liveness', 
             'valence', 'tempo', 'duration_ms'
         ]
+        self.descriptions = [
+            'Niveau auquel une chanson est compatible avec la danse',
+            'Mesure de l’intensité et de l’activité',
+            'Mesure de l’intensité sonore',
+            'Mesure le niveau de parole dans une musique',
+            'Mesure le niveau d’acoustique dans une chanson',
+            'Mesure l’absence de niveau de parole dans une musique',
+            'Mesure s’il y avait une audience lors de l’enregistrement',
+            'Mesure si une chanson est joyeuse ou triste',
+            'Mesure du tempo de la chanson',
+            'Durée de la chanson en millisecondes'
+        ]
         self.decade_genre_cache = pd.DataFrame()
         self.artist_decade_cache = pd.DataFrame()
         self.songs_decade_cache = pd.DataFrame()
@@ -138,7 +150,7 @@ class Helper:
             mean_pref_values[criteria] = df_compare[criteria].mean()
         return df_compare.reset_index(), mean_pref_values
     
-    def getRealValuesByType(self,name,type):
+    def get_initial_values_by_type(self,name,type):
         if type == 'chansons':
             df = self.df_initial_data.groupby(['track_artist','track_name','track_popularity'])[self.criterias].mean().reset_index()
             return df[df['track_name'] == name]
