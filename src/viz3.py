@@ -7,15 +7,17 @@ import json
 import dash_core_components as dcc
 from helpers import Helper
 
-
-dict_pref = {
-    'sous_genres' : ['trap','neo soul','tropical'],
-    'artistes': ['Ed Sheeran','Metallica','Drake']
-}
-
 helper = Helper('./data/spotify_songs.csv')
 
-def show_viz3():
+dict_pref_cache = None
+
+def show_viz3(dict_pref):
+    
+    global dict_pref_cache
+    dict_pref_cache = None
+    if dict_pref_cache is None:
+        dict_pref_cache = dict_pref
+    
     return html.Div(children=[
         show_buttons(),
         html.Div(children=[
@@ -26,7 +28,7 @@ def show_viz3():
        html.Div(children=[
             dcc.Graph(
             id='radar-chart',
-            figure=user_preferences_chart(),
+            figure=user_preferences_chart(dict_pref),
         )
         ],style={'width':'70%','display':'inline-block','margin-bottom':'100px',}),
        
@@ -40,15 +42,15 @@ def show_viz3():
 )
 def show_top_10(btn_songs, btn_artists, btn_playlists):
     changed_id = [p['prop_id'] for p in dash.callback_context.triggered][0]
-  
+    global dict_pref_cache
     if 'btn-songs' in changed_id:
-        return show_top_songs()
+        return show_top_songs(dict_pref_cache)
     elif 'btn-artists' in changed_id:
-        return show_top_artists()
+        return show_top_artists(dict_pref_cache)
     elif 'btn-playlists' in changed_id:
-        return show_top_playlists()
+        return show_top_playlists(dict_pref_cache)
     else:
-        return show_top_songs()
+        return show_top_songs(dict_pref_cache)
    
 
 @callback(
@@ -78,7 +80,7 @@ def show_buttons():
         ],className='buttons-viz3')
 
 
-def show_top_songs():
+def show_top_songs(dict_pref):
     recommendations_df, mean_pref_values = helper.generate_recommendations_df(dict_pref, recommendation_type='chansons')
     top_songs = recommendations_df['track_name'].tolist()
     return html.Div([
@@ -102,7 +104,7 @@ def update_playlist_style(n_clicks):
     index = json.loads(changed_id.split('.')[0])['index'] if changed_id != '.' else 0
     return [{'position':'relative', 'background-color': '#1db954' if i == index else 'transparent'} for i in range(len(n_clicks))]
 
-def show_top_artists():
+def show_top_artists(dict_pref):
     recommendations_df, mean_pref_values = helper.generate_recommendations_df(dict_pref, recommendation_type='artistes')
     top_artists = recommendations_df['track_artist'].tolist()
    
@@ -127,7 +129,7 @@ def update_playlist_style(n_clicks):
     return [{'position':'relative', 'background-color': '#1db954' if i == index else 'transparent'} for i in range(len(n_clicks))]
 
 
-def show_top_playlists():
+def show_top_playlists(dict_pref):
     recommendations_df, mean_pref_values = helper.generate_recommendations_df(dict_pref, recommendation_type='playlist')
     top_playlists = recommendations_df['playlist_name'].tolist()
     
@@ -161,16 +163,16 @@ def update_playlist_style(n_clicks):
 )
 def update_radar_chart(n_clicks_chansons, n_clicks_artistes, n_clicks_playlists):
     ctx = dash.callback_context
-    
+    global dict_pref_cache
     if not ctx.triggered:
-        return user_preferences_chart()
+        return user_preferences_chart(dict_pref_cache)
     
     prop_id = ctx.triggered[0]['prop_id']
     
     type = json.loads(prop_id.split('.')[0])['type']
     selected_index = json.loads(prop_id.split('.')[0])['index']
 
-    recommendations_df, _ = helper.generate_recommendations_df(dict_pref, recommendation_type=type)
+    recommendations_df, _ = helper.generate_recommendations_df(dict_pref_cache, recommendation_type=type)
 
     data = recommendations_df.iloc[selected_index]
     data_criterias  = data[3:]if type == 'chansons' else data[1:]
@@ -184,7 +186,7 @@ def update_radar_chart(n_clicks_chansons, n_clicks_artistes, n_clicks_playlists)
     values_and_desriptions = [(i, j) for i, j in zip(real_values_data_criterias, helper.descriptions)]
   
 
-    fig = user_preferences_chart()
+    fig = user_preferences_chart(dict_pref_cache)
     
     fig.add_trace(go.Scatterpolar(
         r=data_criterias,
@@ -200,7 +202,7 @@ def update_radar_chart(n_clicks_chansons, n_clicks_artistes, n_clicks_playlists)
     return fig
     
     
-def user_preferences_chart():
+def user_preferences_chart(dict_pref):
     fig = go.Figure()
     user_pref_dict = helper.generate_user_preferences_dict(dict_pref)
     user_pref_real = helper.generate_real_user_preferences_dict(dict_pref)

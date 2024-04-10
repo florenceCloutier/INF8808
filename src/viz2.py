@@ -4,31 +4,26 @@ import dash_core_components as dcc
 import plotly.express as px
 from helpers import Helper
 
-dict_pref = {
-    'sous_genres' : ['trap','neo soul','tropical'],
-    'artistes': ['Ed Sheeran','Metallica','Drake']
-}
-
 helper = Helper('./data/spotify_songs.csv')
 
-def show_viz2():
+def show_viz2(dict_pref):
     return html.Div(
         id="viz2-container", className="column", 
         children = [
             html.Div(
                 id="viz2",
                 children=[
-                    getVisualisation2Component()
+                    getVisualisation2Component(dict_pref)
                 ]
             )])
         
     
-def getVisualisation2Component():
+def getVisualisation2Component(dict_pref):
     return html.Div(className="column", children = [
             html.Div(className="title", children=[  
                 html.H1("Vos compatibilités avec les différents genres musicaux", style={'textAlign': 'center', })
             ]),
-            dcc.Graph(figure=getGenreCompatibilityComponent(), 
+            dcc.Graph(figure=getGenreCompatibilityComponent(dict_pref), 
                   id='swarm-chart',
                   config=dict(
                       showTips=False,
@@ -38,7 +33,7 @@ def getVisualisation2Component():
         )
     
     
-def getGenreCompatibilityComponent():
+def getGenreCompatibilityComponent(dict_pref):
     data = helper.generate_subgenre_similarity_df(dict_pref)
     df = pd.DataFrame(data)
     df = df.rename(columns={"playlist_subgenre": "Sous-genre"})
