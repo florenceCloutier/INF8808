@@ -33,15 +33,16 @@ def getUserProfilSubGenre():
 @callback(
     [Output('selected-genres', 'children'),
      Output({'type': 'genre-button', 'index': ALL}, 'style')],
-    [Input({'type': 'genre-button', 'index': i}, 'n_clicks') for i in range(len(genres))]
+    [Input({'type': 'genre-button', 'index': ALL}, 'n_clicks') ]
 )
-def update_selected_genres(*args):
+def update_selected_genres(n_clicks):
+    print(n_clicks)
     global selected_genres
-    selected_genres_index = [1 if (num % 2 == 1) else 0 for num in args]
+    selected_genres_index = [1 if (num % 2 == 1) else 0 for num in n_clicks]
     selected_genres = [genre for genre, select in zip(genres, selected_genres_index) if select == 1]
     
     button_styles = []
-    for i, n_clicks in enumerate(args):
+    for i, n_clicks in enumerate(n_clicks):
         button_style = {'margin': '5px'}
         if n_clicks and n_clicks % 2 == 1:
             button_style['background-color'] = 'green'
@@ -69,7 +70,7 @@ def generate_new_grid(n_clicks):
         html.Div(className="title", children=[
             html.H1(['Sélectionnez vos artistes favoris'], style={'margin-top': '15px', 'textAlign': 'center'})
         ]),
-        html.Div(id='selected-artist'),
+        html.Div(id='selected-artists'),
         html.Div([
             html.Button(artist, id={'type': 'artist-button', 'index': i}, n_clicks=0, className='artist-button',
                         style={'margin': '5px'})
@@ -80,18 +81,25 @@ def generate_new_grid(n_clicks):
     
     return artist_div
 
+
 @callback(
     [Output('selected-artists', 'children'),
      Output({'type': 'artist-button', 'index': ALL}, 'style')],
-    [Input({'type': 'artist-button', 'index': i}, 'n_clicks') for i in range(10)]
+    [Input({'type': 'artist-button', 'index': ALL}, 'n_clicks')]
 )
-def update_selected_artists(*args):
-    print(args)
-    selected_artists_index = [1 if (num % 2 == 1) else 0 for num in args]
+def update_selected_artists(n_clicks):
+    ctx = dash.callback_context
+    
+    if not ctx.triggered:
+        raise dash.exceptions.PreventUpdate
+    
+    print(n_clicks)
+    
+    selected_artists_index = [1 if (num % 2 == 1) else 0 for num in n_clicks]
     selected_artists = [artist for artist, select in zip(genres, selected_artists_index) if select == 1]
     
     button_styles = []
-    for i, n_clicks in enumerate(args):
+    for i, n_clicks in enumerate(n_clicks):
         button_style = {'margin': '5px'}
         if n_clicks and n_clicks % 2 == 1:
             button_style['background-color'] = 'green'
