@@ -76,8 +76,12 @@ class Helper:
         return df
     ## ------  Profil  -----------
     def generate_genres_list(self):
-        genres_list = self.df_data['playlist_subgenre'].unique().tolist()
+        genres_list = self.df_data['playlist_genre'].unique().tolist()
         return genres_list
+    
+    def generate_artists_list(self):
+        artists_list = self.df_data['track_artist'].unique().tolist()
+        return artists_list
  
     ## ------  Visualisation 1  -----------
 
