@@ -128,7 +128,6 @@ def getListOfRecommendationsComponents(recommendations, id_suffix, width='50%'):
         style={'width': width}
     )
 
-
 def handleDecadeChange(n_clicks, value):
     if n_clicks is None:
         return dash.no_update

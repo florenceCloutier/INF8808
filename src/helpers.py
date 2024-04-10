@@ -74,7 +74,10 @@ class Helper:
         # df_normalized = pd.DataFrame(normalized_data, columns=numerical_columns.columns, index=df.index)
         # df.update(df_normalized)
         return df
-
+    ## ------  Profil  -----------
+    def generate_genres_list(self):
+        genres_list = self.df_data['playlist_subgenre'].unique().tolist()
+        return genres_list
  
     ## ------  Visualisation 1  -----------
 
