@@ -3,16 +3,10 @@ import dash_html_components as html
 import plotly.graph_objects as go
 import dash_core_components as dcc
 
-
-dict_pref = {
-    'sous_genres' : ['trap','neo soul','tropical'],
-    'artistes': ['Ed Sheeran','Metallica','Drake']
-}
-
 helper = Helper('./data/spotify_songs.csv')
 
 
-def show_viz1():
+def show_viz1(dict_pref):
     return html.Div(children=[
         html.Div(children=[
             html.H1('Voici votre profil', className='title-viz1'),
@@ -20,13 +14,13 @@ def show_viz1():
         html.Div(children=[
             dcc.Graph(
                 id='radar-chart-viz1',
-                figure=user_preferences_chart(),
+                figure=user_preferences_chart(dict_pref),
             )
         ], className='radar-chart-viz1'),
     ])
 
     
-def user_preferences_chart():
+def user_preferences_chart(dict_pref):
     fig = go.Figure()
     user_pref_dict = helper.generate_user_preferences_dict(dict_pref)
     user_pref_real = helper.generate_real_user_preferences_dict(dict_pref)

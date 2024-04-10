@@ -18,11 +18,10 @@ app.title = 'Spotify Song Recommender'
 
 
 app.layout = html.Div(children=[
-    show_viz1(),
-    show_viz2(),
-    show_viz3(),
+    show_viz1(dict_pref),
+    show_viz2(dict_pref),
+    show_viz3(dict_pref),
     getRecommendationsForDecade(2010, 2019, dict_pref)
-   
 ])
 
 server = app.server
