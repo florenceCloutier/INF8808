@@ -36,8 +36,8 @@ def showVizualizations(dict_pref):
     return html.Div(children=[
     dcc.Link('Go back to user preferences', href='/userpreferences'),
     show_viz1(dict_pref),
-    show_viz2(dict_pref),
     show_viz3(dict_pref),
+    show_viz2(dict_pref),
     getRecommendationsForDecade(2010, 2019, dict_pref)
 ])
 
