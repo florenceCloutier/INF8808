@@ -1,3 +1,4 @@
+import json
 import dash_html_components as html
 from dash import callback_context, dcc
 from dash import ALL
@@ -170,6 +171,7 @@ def generate_profil_pref(n_clicks):
     print(selected_artists)
     print(selected_artists_search[1:])
     final_artist_list = selected_artists + selected_artists_search[1:]
-    user_pref = helper.generate_profil_attributes(final_artist_list, selected_genres)
-    print(user_pref)
-    return user_pref
+    dict_pref = helper.generate_profil_attributes(final_artist_list, selected_genres)
+    print(dict_pref)
+    return html.Div([dcc.Link('Go to vizualizations', href='/viz?dict_pref=' + json.dumps(dict_pref))])
+    

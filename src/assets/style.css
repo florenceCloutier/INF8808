@@ -10,8 +10,8 @@
 }
 
 @font-face {
-  font-family: "SpotifyFont";
-  src: url("fonts/Metropolis-SemiBold.otf");
+  font-family: 'SpotifyFont';
+  src: url('fonts/Metropolis-SemiBold.otf');
 }
 
 body {
@@ -45,7 +45,7 @@ body {
 }
 
 #decade-text {
-  font-family: "SpotifyFont", sans-serif;
+  font-family: 'SpotifyFont', sans-serif;
   font-size: 4em;
   font-weight: bold;
   margin: 0;
@@ -54,7 +54,7 @@ body {
 
 .title {
   margin-top: 0;
-  font-family: "SpotifyFont", sans-serif;
+  font-family: 'SpotifyFont', sans-serif;
   font-size: 1.3em;
   font-weight: bold;
   margin: 0;
@@ -65,7 +65,7 @@ body {
 }
 
 .incontournable-text {
-  font-family: "SpotifyFont", sans-serif;
+  font-family: 'SpotifyFont', sans-serif;
   font-size: 1em;
   font-weight: bold;
   margin: 0;
@@ -91,7 +91,7 @@ body {
 }
 
 .timeline-item {
-  font-family: "SpotifyFont", sans-serif;
+  font-family: 'SpotifyFont', sans-serif;
   position: relative;
   display: flex;
   align-items: center;
@@ -131,7 +131,7 @@ body {
 }
 
 .recommendation {
-  font-family: "SpotifyFont", sans-serif;
+  font-family: 'SpotifyFont', sans-serif;
   display: inline-block;
   padding: 20px 40px;
   margin: 10px;
@@ -235,4 +235,75 @@ body {
 	text-overflow: ellipsis;
 	text-shadow: 0 1px 0 #EEE;
 	white-space: nowrap;
+}
+/*Viz3*/
+.list {
+  font-size: 25px;
+  padding: 20px;
+  list-style-type: none;
+  color: var(--spotify-white);
+  font-family: 'SpotifyFont';
+}
+
+.button-background-active {
+  background-color: var(--spotify-green);
+}
+
+.button-background-inactive {
+  background-color: var(--spotify-dark-grey);
+}
+
+.top-title {
+  font-size: 30px;
+  padding: 10px;
+  color: var(--spotify-white);
+  font-family: 'SpotifyFont';
+}
+
+.buttons-viz3 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'SpotifyFont';
+}
+
+.hover-highlight li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--spotify-light-grey);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.hover-highlight li:hover::before {
+  opacity: 1;
+}
+
+/* For viz 1 */
+.title-viz1 {
+  color: var(--spotify-white);
+  text-align: center;
+  margin-right: 100px;
+}
+
+.header-viz1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  font-family: 'SpotifyFont';
+}
+
+.radar-chart-viz1 {
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-bottom: 100px;
 }
