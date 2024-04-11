@@ -106,6 +106,7 @@ class Helper:
         # df_normalized = pd.DataFrame(normalized_data, columns=numerical_columns.columns, index=df.index)
         # df.update(df_normalized)
         return df
+    
     ## ------  Profil  -----------
     def generate_genres_list(self):
         return self.genres_list
