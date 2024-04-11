@@ -127,11 +127,12 @@ class Helper:
 
         return artist_names
     
-    def generate_profil_attributes(self, selected_artists):
-        attributes = self.attributes_by_artist[self.attributes_by_artist.iloc[:, 0].isin(selected_artists)]
-        total_attributes = attributes[self.criterias].mean()
+    def generate_profil_attributes(self, selected_artist, selected_genre):
+        dict_pref = {'artistes':selected_artist,
+                     'sous-genres':selected_genre}
         
-        return total_attributes
+        return dict_pref
+    
     ## ------  Visualisation 1  -----------
 
     def generate_user_preferences_dict(self,dict_pref):

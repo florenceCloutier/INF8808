@@ -13,7 +13,6 @@ from user_profile import getUserProfilSubGenre
 app = dash.Dash(__name__)
 app.title = 'Spotify Song Recommender'
 
-app.layout = html.Div(getUserProfilSubGenre())
 
 # TODO - Use the real preference instead of this dummy one
 dict_pref = {
@@ -21,4 +20,4 @@ dict_pref = {
     'artistes': ['Ed Sheeran','Metallica','Drake']
 }
 
-#app.layout = html.Div(getRecommendationsForDecade(2010, 2019, dict_pref))
+app.layout = html.Div(getRecommendationsForDecade(2010, 2019, dict_pref))

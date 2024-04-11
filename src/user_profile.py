@@ -37,7 +37,7 @@ def getUserProfilSubGenre():
                         ], className='divBorder', style={'display': 'grid', 'grid-template-columns': 'repeat(3, 1fr)'}),
                     ]),
                     html.Div(className="select-genres", children=[
-                        html.Button('Confirmation de la sélection', id='selection-button', n_clicks=0, style={'margin-top': '15px', 'textAlign': 'center','background-color':'#b3b3b3'})  # New Selection button
+                        html.Button('Confirmation de la sélection', className ="next-step-button",id='selection-button', n_clicks=0, style={'margin-top': '15px', 'textAlign': 'center','background-color':'#b3b3b3'})  # New Selection button
                     ], style={'display': 'grid', 'grid-template-columns': 'repeat(1, 1fr)'}),
                     html.Div(id='hidden-div'),#, style={'display': 'none'})
                     
@@ -102,7 +102,7 @@ def generate_new_grid(n_clicks):
             html.Div(id='dd-output-container')
         ], className='dropdownBorder'),
         html.Div(className="select-artists", children=[
-                        html.Button("Confirmation de la sélection d'artistes", id='selection-button-artist', n_clicks=0, style={'margin-top': '15px', 'textAlign': 'center','background-color':'#b3b3b3'})  # New Selection button
+                        html.Button("Confirmation de la sélection d'artistes", className ="next-step-button", id='selection-button-artist', n_clicks=0, style={'margin-top': '15px', 'textAlign': 'center','background-color':'#b3b3b3'})  # New Selection button
                     ], style={'display': 'grid', 'grid-template-columns': 'repeat(1, 1fr)'}),
         
         html.Div(id='artist-div')
@@ -170,6 +170,6 @@ def generate_profil_pref(n_clicks):
     print(selected_artists)
     print(selected_artists_search[1:])
     final_artist_list = selected_artists + selected_artists_search[1:]
-    user_pref = helper.generate_profil_attributes(final_artist_list)
+    user_pref = helper.generate_profil_attributes(final_artist_list, selected_genres)
     print(user_pref)
     return user_pref
