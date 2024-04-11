@@ -10,6 +10,7 @@ from viz3 import show_viz3
 from viz4 import getRecommendationsForDecade
 from user_profile import getUserProfilSubGenre
 
+
 import plotly.graph_objects as go
 
 app = dash.Dash(__name__)
