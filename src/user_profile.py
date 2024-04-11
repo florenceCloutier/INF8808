@@ -177,5 +177,5 @@ def generate_profil_pref(n_clicks):
         raise dash.exceptions.PreventUpdate
     dict_pref = helper.generate_profil_attributes(final_artist_list, selected_genres)
     
-    return html.Div([dcc.Link(className='viz-link-text', children=['Explorez les visualisations!'], href='/viz?dict_pref=' + json.dumps(dict_pref))], className='button-go-viz')
+    return html.Div([dcc.Link(className='viz-link-text', children=['Explorez les visualisations!'], href='/viz?dict_pref=' + json.dumps(dict_pref))], className='viz-link-container')
     
