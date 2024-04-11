@@ -1,5 +1,6 @@
 #%%
 import pandas as pd
+import numpy as np
 from sklearn.preprocessing import MinMaxScaler
 from scipy.spatial import distance
 
@@ -62,9 +63,47 @@ class Helper:
         self.decade_genre_cache = pd.DataFrame()
         self.artist_decade_cache = pd.DataFrame()
         self.songs_decade_cache = pd.DataFrame()
-
-
-
+        
+        self.genres_list = self.df_data['playlist_genre'].unique().tolist()
+        self.attributes_by_genre = self.compute_attributes_by_genre()
+        
+        
+        self.artists_list = self.df_data['track_artist'].unique().tolist()
+        self.attributes_by_artist = self.compute_attributes_by_artist()
+        
+        self.genre_to_sousgenre = {
+            "pop": ["dance pop", "indie poptimism", "post teen pop", "southern hip hop", "hip hop"],
+            "rap": ["gangster rap", "trap"],
+            "rock": ["album rock", "classic rock", "hard rock"],
+            "r&b": ["urban contemporary", "reggaeton", "new jack swing"],
+            "latin": ["tropical", "latin pop", "latin hip hop", ],
+            "edm": ["indie", "indie pop", "neo soul", "electro house", "big room", "pop edm", "progressive electro house"],
+        }
+    
+    def compute_attributes_by_genre(self):
+        """
+        attributes_by_genre = pd.DataFrame(columns=self.criterias)
+        for genre in self.genres_list:
+            genre_data = self.df_data[self.df_data['playlist_genre'] == genre]
+            genre_mean = genre_data[self.criterias].mean()
+            attributes_by_genre.loc[genre] = genre_mean
+        
+        attributes_by_genre.to_csv('genre')
+        """
+        return pd.read_csv("./data/attributes_by_genre.csv", index_col = False)
+    
+    def compute_attributes_by_artist(self):
+        """
+        attributes_by_artist = pd.DataFrame(columns=self.criterias)
+        for artist in self.artists_list:
+            artist_data = self.df_data[self.df_data['track_artist'] == artist]
+            artist_mean = artist_data[self.criterias].mean()
+            attributes_by_artist.loc[artist] = artist_mean
+        attributes_by_artist.to_csv('artist')
+        print(attributes_by_artist.head())
+        """
+        return pd.read_csv("./data/attributes_by_artist.csv", index_col = False)    
+            
     def read_data(self, path):
         df = pd.read_csv(path)
         numerical_columns = df.select_dtypes(include=['float64', 'int64'])
@@ -80,8 +119,36 @@ class Helper:
         # df_normalized = pd.DataFrame(normalized_data, columns=numerical_columns.columns, index=df.index)
         # df.update(df_normalized)
         return df
+    
+    ## ------  Profil  -----------
+    def generate_genres_list(self):
+        return self.genres_list
+    
+    def generate_artists_list(self):
+        artists_list = self.df_data['track_artist'].unique().tolist()
+        return artists_list
+    
+    def generate_sample_artists_from_genres(self, selected_genres):
+        attributes = pd.DataFrame(columns=self.criterias)
+        distances_df = pd.DataFrame(columns=['distance'])
+        
+        attributes = self.attributes_by_genre[self.attributes_by_genre.iloc[:, 0].isin(selected_genres)]
+        total_attributes = attributes[self.criterias].mean()
+        distances_df['distance'] = np.linalg.norm(self.attributes_by_artist.iloc[:, 1:].values - total_attributes.values, axis=1)
+        
+        artist_names = self.attributes_by_artist.iloc[distances_df['distance'].nsmallest(6).index]['Unnamed: 0'].tolist()
 
- 
+        return artist_names
+    
+    def generate_profil_attributes(self, selected_artist, selected_genre):
+        selected_sous_genre = []
+        for genre in selected_genre:
+            if genre in self.genre_to_sousgenre:
+                selected_sous_genre += self.genre_to_sousgenre[genre]
+        dict_pref = {'artistes':selected_artist,
+                     'sous_genres':selected_sous_genre}
+        return dict_pref
+    
     ## ------  Visualisation 1  -----------
 
     def generate_user_preferences_dict(self,dict_pref):

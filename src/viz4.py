@@ -84,7 +84,7 @@ def getTimelineComponent(startYear, endYear, dict_pref):
     songsInfo = get_top_songs_for_decade(startYear, endYear, dict_pref)
 
     for song_name, year, isBest, artist, album_name, similarity in songsInfo:
-        details = "This song was released in " + str(year) + " by " + artist + " in the album " + album_name + ". This song matches your profile by " + str(round(similarity*100, 2)) + "%"
+        details = "Cette chanson a été créé en " + str(year) + " par " + artist + " et est dans la playlist " + album_name + ". Cette chanson est compatible à " + str(round(similarity*100, 2)) + "% avec votre profil."
         
         timeline_item_content = [
             html.Div(year, className='timeline-year'),
@@ -127,7 +127,6 @@ def getListOfRecommendationsComponents(recommendations, id_suffix, width='50%'):
         className='recommendations-column',
         style={'width': width}
     )
-
 
 def handleDecadeChange(n_clicks, value):
     if n_clicks is None:
