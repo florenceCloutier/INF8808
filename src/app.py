@@ -19,10 +19,11 @@ def show_user_preferences():
     return getUserProfilSubGenre()
 
 def showVizualizations(dict_pref):
+    print(str(dict_pref))
     return html.Div(children=[
     dcc.Link('Go back to user preferences', href='/userpreferences'),
-    #show_viz1(dict_pref),
-    #show_viz3(dict_pref),
+    show_viz1(dict_pref),
+    show_viz3(dict_pref),
     show_viz2(dict_pref),
     getRecommendationsForDecade(2010, 2019, dict_pref)
 ])
@@ -47,7 +48,7 @@ def display_page(pathname, href):
         dict_pref = json.loads(dict_pref_str)
     if pathname == '/userpreferences' or pathname == '/':
         return show_user_preferences()
-    elif pathname == '/viz':
+    elif pathname == '/viz':        
         return showVizualizations(dict_pref)
     else:
         return "404 Page Error! Please select a link"

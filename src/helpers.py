@@ -70,6 +70,15 @@ class Helper:
         
         self.artists_list = self.df_data['track_artist'].unique().tolist()
         self.attributes_by_artist = self.compute_attributes_by_artist()
+        
+        self.genre_to_sousgenre = {
+            "pop": ["dance pop", "indie poptimism", "post-teen pop", "southern hip hop", "hip hop"],
+            "rap": ["gangster rap", "trap"],
+            "rock": ["album rock", "classic rock", "hard rock"],
+            "r&b": ["urban contemporary", "reggaeton", "new jack swing"],
+            "latin": ["tropical", "latin pop", "latin hip hop", ],
+            "edm": ["indie", "indie pop", "neo soul", "electro house", "big room", "pop edm", "progressive electro house"],
+        }
     
     def compute_attributes_by_genre(self):
         """
@@ -81,7 +90,7 @@ class Helper:
         
         attributes_by_genre.to_csv('genre')
         """
-        return pd.read_csv("../data/attributes_by_genre.csv", index_col = False)
+        return pd.read_csv("./data/attributes_by_genre.csv", index_col = False)
     
     def compute_attributes_by_artist(self):
         """
@@ -93,7 +102,7 @@ class Helper:
         attributes_by_artist.to_csv('artist')
         print(attributes_by_artist.head())
         """
-        return pd.read_csv("../data/attributes_by_artist.csv", index_col = False)    
+        return pd.read_csv("./data/attributes_by_artist.csv", index_col = False)    
             
     def read_data(self, path):
         df = pd.read_csv(path)
@@ -133,9 +142,12 @@ class Helper:
         return artist_names
     
     def generate_profil_attributes(self, selected_artist, selected_genre):
+        selected_sous_genre = []
+        for genre in selected_genre:
+            if genre in self.genre_to_sousgenre:
+                selected_sous_genre += self.genre_to_sousgenre[genre]
         dict_pref = {'artistes':selected_artist,
-                     'sous_genres':selected_genre}
-        
+                     'sous_genres':selected_sous_genre}
         return dict_pref
     
     ## ------  Visualisation 1  -----------
@@ -171,7 +183,6 @@ class Helper:
         criterias = ['danceability','energy','loudness','speechiness','acousticness','instrumentalness','liveness','valence','tempo','duration_ms']
         df_subgenres = self.df_data.groupby(['playlist_genre','playlist_subgenre'])[criterias].mean().reset_index()
         user_pref_dict = self.generate_user_preferences_dict(dict_pref)
-        print(user_pref_dict)
         user_pref_df = pd.DataFrame([user_pref_dict], columns=user_pref_dict.keys())
         df_subgenres['similarity'] = df_subgenres[criterias].apply(lambda x: 1 - distance.euclidean(x, user_pref_df.values.flatten()), axis=1)
         return df_subgenres[['playlist_genre','playlist_subgenre','similarity']]
