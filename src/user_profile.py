@@ -8,13 +8,8 @@ from dash import State
 import helpers
 import pandas as pd
 
-helper = helpers.Helper("../data/spotify_songs.csv")
-#selected_artists = []
-#selected_genres = []
-#global selected_artists_search
+helper = helpers.Helper("./data/spotify_songs.csv")
 
-# TODO - Use the real genre list instead of this dummy one
-# Sample list of music genres
 genres = helper.generate_genres_list()
 all_artist_list = helper.generate_artists_list()
 # Function that gets called in app.pys
@@ -25,7 +20,7 @@ def getUserProfilSubGenre():
                     ]),
                     html.Div(id='selected-genres', style = {'display':'none'}),
                     html.Div(className="title", children=[
-                        html.H2(['Sélectionnez vos genres préférez:'], style={'textAlign': 'center'})
+                        html.H2(['Sélectionnez vos genres préférés:'], style={'textAlign': 'center'})
                     ]),
                     html.Div([
                         html.Div([
@@ -38,7 +33,7 @@ def getUserProfilSubGenre():
                         ], className='divBorder', style={'display': 'grid', 'grid-template-columns': 'repeat(3, 1fr)'}),
                     ]),
                     html.Div(className="select-genres", children=[
-                        html.Button('Confirmation de la sélection', className ="next-step-button",id='selection-button', n_clicks=0, style={'margin-top': '15px', 'textAlign': 'center','background-color':'#b3b3b3'})  # New Selection button
+                        html.Button('Confirmation de la sélection', className ="next-step-button", id='selection-button', n_clicks=0)  # New Selection button
                     ], style={'display': 'grid', 'grid-template-columns': 'repeat(1, 1fr)'}),
                     html.Div(id='hidden-div'),#, style={'display': 'none'})
                     
@@ -50,7 +45,6 @@ def getUserProfilSubGenre():
     [Input({'type': 'genre-button', 'index': ALL}, 'n_clicks') ]
 )
 def update_selected_genres(n_clicks):
-    print(n_clicks)
     global selected_genres
     selected_genres_index = [1 if (num % 2 == 1) else 0 for num in n_clicks]
     selected_genres = [genre for genre, select in zip(genres, selected_genres_index) if select == 1]
@@ -60,9 +54,10 @@ def update_selected_genres(n_clicks):
         button_style = {'margin': '5px'}
         if n_clicks and n_clicks % 2 == 1:
             button_style['background-color'] = '#1db954'
+            button_style['color'] = '#ffffff'
+
         button_styles.append(button_style)
     
-    print(selected_genres)
     return f"Selected Genres: {', '.join(selected_genres)}", button_styles
 
 @callback(
@@ -74,17 +69,19 @@ def generate_new_grid(n_clicks):
     if n_clicks is None:
         raise dash.exceptions.PreventUpdate
 
-    # TODO: Implement logic to extract artists based on genres
     global artists 
     global selected_artists_search
     selected_artists_search = []
     
+    if selected_genres == [] :
+        raise dash.exceptions.PreventUpdate
+    
     artists = helper.generate_sample_artists_from_genres(selected_genres)
     #artists = selected_genres
 
-    artist_div = html.Div([
+    artist_div = html.Div(id="artist-selection-for-link", children=[
         html.Div(className="title", children=[
-            html.H2(['Sélectionnez vos artistes favoris'], style={'margin-top': '15px', 'textAlign': 'center'})
+            html.H2(['Sélectionnez vos artistes favoris:'], style={'margin-top': '15px', 'textAlign': 'center'})
         ]),
         html.Div(id='selected-artists', style = {'display':'none'}),
         html.Div(className="title", children=[
@@ -103,7 +100,7 @@ def generate_new_grid(n_clicks):
             html.Div(id='dd-output-container')
         ], className='dropdownBorder'),
         html.Div(className="select-artists", children=[
-                        html.Button("Confirmation de la sélection d'artistes", className ="next-step-button", id='selection-button-artist', n_clicks=0, style={'margin-top': '15px', 'textAlign': 'center','background-color':'#b3b3b3'})  # New Selection button
+                        html.Button("Confirmation de la sélection d'artistes", className ="next-step-button", id='selection-button-artist', n_clicks=0)  # New Selection button
                     ], style={'display': 'grid', 'grid-template-columns': 'repeat(1, 1fr)'}),
         
         html.Div(id='artist-div')
@@ -124,10 +121,8 @@ def update_selected_artists(n_clicks):
     if not ctx.triggered:
         raise dash.exceptions.PreventUpdate
     
-    print(n_clicks)
     selected_artists_index = [1 if (num % 2 == 1) else 0 for num in n_clicks]
     selected_artists = [artist for artist, select in zip(artists, selected_artists_index) if select == 1]
-    print(selected_artists)
     
     #selected_artists.append(selected_artists_search)
     button_styles = []
@@ -135,9 +130,10 @@ def update_selected_artists(n_clicks):
         button_style = {'margin': '5px'}
         if n_clicks and n_clicks % 2 == 1:
             button_style['background-color'] = '#1db954'
+            button_style['color'] = '#ffffff'
         button_styles.append(button_style)
     
-    return f"Selected Genres: {', '.join(selected_artists)}", button_styles
+    return f"Selected `Genre`s: {', '.join(selected_artists)}", button_styles
 
 @callback(
     Output('dd-output-container', 'children'),
@@ -147,7 +143,6 @@ def update_output(value):
     global selected_artists_search
     if value not in selected_artists_search:
         selected_artists_search.append(value)
-    print(selected_artists_search)
     
     selected_artists_search_str = ', '.join(selected_artists_search[1:])
     if (len(selected_artists_search) > 1):
@@ -156,9 +151,8 @@ def update_output(value):
     else:
         return
     
-
 @callback(
-    Output('artist-div', 'children'),
+    Output('artist-selection-for-link', 'children'),
     [Input('selection-button-artist', 'n_clicks')],
     prevent_initial_call=True
 )
@@ -166,12 +160,22 @@ def generate_profil_pref(n_clicks):
     
     if n_clicks is None:
         raise dash.exceptions.PreventUpdate
-
-    print(n_clicks)
-    print(selected_artists)
-    print(selected_artists_search[1:])
-    final_artist_list = selected_artists + selected_artists_search[1:]
+    
+    try:
+        final_artist_list = selected_artists + selected_artists_search[1:]
+        if final_artist_list == []:
+            raise dash.exceptions.PreventUpdate
+        dict_pref = helper.generate_profil_attributes(final_artist_list, selected_genres)
+        
+        
+        return html.Div([dcc.Link(className='viz-link-text', children=['Explorez les visualisations!'], href='/viz?dict_pref=' + json.dumps(dict_pref))], className='button-go-viz')
+    except:
+        pass
+    
+    final_artist_list = selected_artists_search[1:]
+    if final_artist_list == []:
+        raise dash.exceptions.PreventUpdate
     dict_pref = helper.generate_profil_attributes(final_artist_list, selected_genres)
-    print(dict_pref)
-    return html.Div([dcc.Link('Go to vizualizations', href='/viz?dict_pref=' + json.dumps(dict_pref))])
+    
+    return html.Div([dcc.Link(className='viz-link-text', children=['Explorez les visualisations!'], href='/viz?dict_pref=' + json.dumps(dict_pref))], className='button-go-viz')
     

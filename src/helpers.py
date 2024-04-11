@@ -72,7 +72,7 @@ class Helper:
         self.attributes_by_artist = self.compute_attributes_by_artist()
         
         self.genre_to_sousgenre = {
-            "pop": ["dance pop", "indie poptimism", "post-teen pop", "southern hip hop", "hip hop"],
+            "pop": ["dance pop", "indie poptimism", "post teen pop", "southern hip hop", "hip hop"],
             "rap": ["gangster rap", "trap"],
             "rock": ["album rock", "classic rock", "hard rock"],
             "r&b": ["urban contemporary", "reggaeton", "new jack swing"],
@@ -137,7 +137,6 @@ class Helper:
         distances_df['distance'] = np.linalg.norm(self.attributes_by_artist.iloc[:, 1:].values - total_attributes.values, axis=1)
         
         artist_names = self.attributes_by_artist.iloc[distances_df['distance'].nsmallest(6).index]['Unnamed: 0'].tolist()
-        print(artist_names)
 
         return artist_names
     

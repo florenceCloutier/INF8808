@@ -10,8 +10,8 @@
 }
 
 @font-face {
-  font-family: 'SpotifyFont';
-  src: url('fonts/Metropolis-SemiBold.otf');
+  font-family: "SpotifyFont";
+  src: url("fonts/Metropolis-SemiBold.otf");
 }
 
 body {
@@ -45,7 +45,7 @@ body {
 }
 
 #decade-text {
-  font-family: 'SpotifyFont', sans-serif;
+  font-family: "SpotifyFont", sans-serif;
   font-size: 4em;
   font-weight: bold;
   margin: 0;
@@ -54,7 +54,7 @@ body {
 
 .title {
   margin-top: 0;
-  font-family: 'SpotifyFont', sans-serif;
+  font-family: "SpotifyFont", sans-serif;
   font-size: 1.3em;
   font-weight: bold;
   margin: 0;
@@ -65,7 +65,7 @@ body {
 }
 
 .incontournable-text {
-  font-family: 'SpotifyFont', sans-serif;
+  font-family: "SpotifyFont", sans-serif;
   font-size: 1em;
   font-weight: bold;
   margin: 0;
@@ -91,7 +91,7 @@ body {
 }
 
 .timeline-item {
-  font-family: 'SpotifyFont', sans-serif;
+  font-family: "SpotifyFont", sans-serif;
   position: relative;
   display: flex;
   align-items: center;
@@ -131,7 +131,7 @@ body {
 }
 
 .recommendation {
-  font-family: 'SpotifyFont', sans-serif;
+  font-family: "SpotifyFont", sans-serif;
   display: inline-block;
   padding: 20px 40px;
   margin: 10px;
@@ -191,50 +191,42 @@ body {
   align-items: center;
 }
 
-.divBorder{
+.divBorder {
   margin: auto;
   width: 50%;
- }
+}
 
-.dropdownBorder{
+.dropdownBorder {
   margin: auto;
   width: 25%;
- }
+}
 
-.select-artists{
+.select-artists {
   margin: auto;
   margin-bottom: 70px;
   text-align: center;
   height: 70px;
   width: 20%;
- }
+}
 
-.select-genres{
+.select-genres {
   margin: auto;
   margin-bottom: 70px;
   text-align: center;
   height: 70px;
   width: 20%;
- }
+}
 
-.next-step-button{
-	background: initial;
-	border: initial;
-	border-width: 0 7px;
-	box-sizing: border-box;
-	color: #333;
-	cursor: default;
-	display: inline-block;
-	font-size: 16px;
-	line-height: 17px;
-	margin: 0;
-	max-width: 100%;
-	overflow: hidden;
-	padding: 2px;
-	text-decoration: none;
-	text-overflow: ellipsis;
-	text-shadow: 0 1px 0 #EEE;
-	white-space: nowrap;
+.next-step-button {
+  font-family: "SpotifyFont";
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px;
+  cursor: pointer;
+  text-align: center;
+  background-color: var(--spotify-light-green);
+  color: var(--spotify-black);
 }
 /*Viz3*/
 .list {
@@ -242,7 +234,7 @@ body {
   padding: 20px;
   list-style-type: none;
   color: var(--spotify-white);
-  font-family: 'SpotifyFont';
+  font-family: "SpotifyFont";
 }
 
 .button-background-active {
@@ -257,18 +249,18 @@ body {
   font-size: 30px;
   padding: 10px;
   color: var(--spotify-white);
-  font-family: 'SpotifyFont';
+  font-family: "SpotifyFont";
 }
 
 .buttons-viz3 {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'SpotifyFont';
+  font-family: "SpotifyFont";
 }
 
 .hover-highlight li::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -296,7 +288,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  font-family: 'SpotifyFont';
+  font-family: "SpotifyFont";
 }
 
 .radar-chart-viz1 {
@@ -306,4 +298,42 @@ body {
   align-items: center;
   flex-direction: column;
   margin-bottom: 100px;
+}
+
+.button-go-viz {
+  background-color: var(--spotify-green);
+  color: var(--spotify-white);
+  font-family: "SpotifyFont";
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.viz-link-text {
+  color: var(--spotify-white);
+  text-decoration: none;
+  text-align: center;
+}
+
+.artist-button {
+  font-family: "SpotifyFont";
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.genre-button {
+  font-family: "SpotifyFont";
+  font-size: 20px;
+  padding: 10px;
+  border-radius: 10px;
+  margin: 10px;
+  cursor: pointer;
+  text-align: center;
 }
