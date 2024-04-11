@@ -36,6 +36,13 @@ body {
   display: block;
   flex-direction: column;
 }
+#profil-title-text {
+  font-family: "SpotifyFont", sans-serif;
+  font-size: 3em;
+  font-weight: bold;
+  margin: 0;
+  color: var(--spotify-light-green);
+}
 
 #decade-text {
   font-family: "SpotifyFont", sans-serif;
@@ -183,3 +190,29 @@ body {
   z-index: 2;
   align-items: center;
 }
+
+.divBorder{
+  margin: auto;
+  width: 50%;
+ }
+
+.dropdownBorder{
+  margin: auto;
+  width: 25%;
+ }
+
+.select-artists{
+  margin: auto;
+  margin-bottom: 70px;
+  text-align: center;
+  height: 70px;
+  width: 20%;
+ }
+
+.select-genres{
+  margin: auto;
+  margin-bottom: 70px;
+  text-align: center;
+  height: 70px;
+  width: 20%;
+ }
