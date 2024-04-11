@@ -300,7 +300,10 @@ body {
   margin-bottom: 100px;
 }
 
-.button-go-viz {
+.viz-link-text {
+  color: var(--spotify-white);
+  text-decoration: none;
+  text-align: center;
   background-color: var(--spotify-green);
   color: var(--spotify-white);
   font-family: "SpotifyFont";
@@ -310,12 +313,10 @@ body {
   margin: 10px;
   cursor: pointer;
   text-align: center;
-}
-
-.viz-link-text {
-  color: var(--spotify-white);
-  text-decoration: none;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50px;
 }
 
 .artist-button {
