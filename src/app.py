@@ -10,6 +10,7 @@ from viz3 import show_viz3
 from viz4 import getRecommendationsForDecade
 from user_profile import getUserProfilSubGenre
 
+
 import plotly.graph_objects as go
 
 app = dash.Dash(__name__)
@@ -21,8 +22,8 @@ def show_user_preferences():
 def showVizualizations(dict_pref):
     return html.Div(children=[
     dcc.Link('Go back to user preferences', href='/userpreferences'),
-    #show_viz1(dict_pref),
-    #show_viz3(dict_pref),
+    show_viz1(dict_pref),
+    show_viz3(dict_pref),
     show_viz2(dict_pref),
     getRecommendationsForDecade(2010, 2019, dict_pref)
 ])

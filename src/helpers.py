@@ -81,7 +81,7 @@ class Helper:
         
         attributes_by_genre.to_csv('genre')
         """
-        return pd.read_csv("../data/attributes_by_genre.csv", index_col = False)
+        return pd.read_csv("./data/attributes_by_genre.csv", index_col = False)
     
     def compute_attributes_by_artist(self):
         """
@@ -93,7 +93,7 @@ class Helper:
         attributes_by_artist.to_csv('artist')
         print(attributes_by_artist.head())
         """
-        return pd.read_csv("../data/attributes_by_artist.csv", index_col = False)    
+        return pd.read_csv("./data/attributes_by_artist.csv", index_col = False)    
             
     def read_data(self, path):
         df = pd.read_csv(path)
