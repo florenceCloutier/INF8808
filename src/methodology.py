@@ -9,7 +9,7 @@ correspond ainsi à une moyenne de tous les attributs des chansons contenues dan
 Pour profiler les préférences des utilisateurs, une distance euclidienne a été utilisée 
 entre les moyennes des attributs et le profil de l'utilisateur. Dans le cas d'une chanson individuelle, 
 la distance entre les attributs de cette chanson et le profil de l'usager a également été calculée.
-Le jeu de données utilisé est disponible à l'adresse suivante :https://www.kaggle.com/datasets/joebeachcapital/30000-spotify-songs
+Le jeu de données utilisé est disponible à l'adresse suivante: https://www.kaggle.com/datasets/joebeachcapital/30000-spotify-songs
 """
 
 def getMethodologyComponent():
