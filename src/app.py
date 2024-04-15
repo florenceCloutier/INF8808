@@ -9,6 +9,7 @@ from viz2 import show_viz2
 from viz3 import show_viz3
 from viz4 import getRecommendationsForDecade
 from user_profile import getUserProfilSubGenre
+from methodology import getMethodologyComponent
 
 import plotly.graph_objects as go
 
@@ -29,7 +30,9 @@ def showVizualizations(dict_pref):
     add_vertical_space(),
     show_viz2(dict_pref),
     add_vertical_space(),
-    getRecommendationsForDecade(2010, 2019, dict_pref)
+    getRecommendationsForDecade(2010, 2019, dict_pref),
+    add_vertical_space(),
+    getMethodologyComponent()
 ])
 
 app.layout = html.Div([
