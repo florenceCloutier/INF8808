@@ -39,11 +39,11 @@ def getGenreCompatibilityComponent(dict_pref):
     df = df.rename(columns={"playlist_subgenre": "Sous-genre"})
     
     colorMap = {
-        'rock': '#00A36C',
-        'pop': '#57C0F2',
-        'rap': '#A8F2F2',
-        'latin': '#57F28A',
-        'r&b': '#578FF2',
+        'rock': '#636efa',
+        'pop': '#ef553b',
+        'rap': '#00cc96',
+        'latin': '#ab63fa',
+        'r&b': '#ffa15a',
         'edm': 'white',
     }
     

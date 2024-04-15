@@ -69,11 +69,20 @@ def getVisualisation4Component(startYear, endYear, dict_pref):
         ])
     
 def getDecadeContentComponents(dict_pref, startYear, endYear):    
-    return html.Div(className="flex-container-space-between", children=[
-        getTimelineComponent(startYear, endYear, dict_pref),
+    return html.Div(className="flex-container-side-by-side", children=[
+        html.Div(children=[
+            html.H2('Recommendations de chansons', className='recommendation-header'),
+            getTimelineComponent(startYear, endYear, dict_pref),
+        ]),
         html.Div(className="flex-container", style={'width': '50%'}, children=[
-            getListOfRecommendationsComponents(get_top_artists_for_decade(startYear, endYear, dict_pref), "artist",width='70%'),
-            getListOfRecommendationsComponents(get_top_genre_for_decade(startYear, endYear, dict_pref), "genres", width='70%') 
+            html.Div(children=[
+                html.H2("Recommendations d'artiste",className='recommendation-header'),
+                getListOfRecommendationsComponents(get_top_artists_for_decade(startYear, endYear, dict_pref), "artist",width='70%'),
+            ]),
+            html.Div(children=[
+                html.H2('Recommendation de genre', className='recommendation-header'),
+                getListOfRecommendationsComponents(get_top_genre_for_decade(startYear, endYear, dict_pref), "genres", width='70%') 
+            ])
         ])
     ])
 
@@ -125,7 +134,6 @@ def getListOfRecommendationsComponents(recommendations, id_suffix, width='50%'):
         id=f'recommendations-div-{id_suffix}',
         children=recommendations_components,
         className='recommendations-column',
-        style={'width': width}
     )
 
 def handleDecadeChange(n_clicks, value):

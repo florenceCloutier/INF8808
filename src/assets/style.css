@@ -22,6 +22,12 @@ body {
   padding: 5px;
 }
 
+.flex-container-side-by-side {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .flex-container-space-between {
   display: flex;
   justify-content: space-between;
@@ -85,6 +91,7 @@ body {
 /* For the timeline */
 .timeline-container {
   position: relative;
+  min-width: 600px;
   width: 50%;
   height: 500px;
   overflow-y: auto;
@@ -141,7 +148,7 @@ body {
   font-size: 20px;
   line-height: 1.5;
   text-align: center;
-  max-width: 200px;
+  width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -336,5 +343,27 @@ body {
   border-radius: 10px;
   margin: 10px;
   cursor: pointer;
+  text-align: center;
+}
+
+.recommendation-header {
+  font-family: "SpotifyFont";
+  font-size: 20px;
+  padding: 10px;
+  color: var(--spotify-white);
+  text-align: center;
+}
+
+.recommendations-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.methodology-container {
+  font-family: "SpotifyFont";
+  font-size: 13px;
+  padding: 10px;
+  color: var(--spotify-light-grey);
   text-align: center;
 }
