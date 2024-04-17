@@ -9,8 +9,10 @@ helper = helpers.Helper("./data/spotify_songs.csv")
 maxYear = 2019
 minYear = 1970
 
+# Allows to cache the preferences when switching between decades
 dict_pref_cache = None
 
+# Callback to generate the decade recommendations
 @callback(
     Output('viz4-container', 'children'),
     [Input('generate-decade-button', 'n_clicks'), Input('generate-decade-button-2', 'n_clicks')],
@@ -29,6 +31,8 @@ explorationString1 = "Exploration de vos potentiels"
 explorationString2 = "goûts musicaux pour la décennie:"
 incontournableString = "Vos incontournables"
 
+# Component to generate the recommendations for a decade
+# It gives the layout of the decade recommendations
 def getRecommendationsForDecade(startYear, endYear, dict_pref):
     global dict_pref_cache
     dict_pref_cache = None
@@ -47,7 +51,9 @@ def getRecommendationsForDecade(startYear, endYear, dict_pref):
             html.Button('▲', id='generate-decade-button-2', className='generate-decade-button', value=f'{startYear+10}-{endYear+10}', style={'visibility': buttonUpVisible})        
         ]),
 ])
-    
+
+# Component to generate the visualisation for a decade
+# Structures them to have the header above the content
 def getVisualisation4Component(startYear, endYear, dict_pref):
     
     decadeString = str(endYear) + " - " + str(startYear)
@@ -67,7 +73,8 @@ def getVisualisation4Component(startYear, endYear, dict_pref):
             ]),
             getDecadeContentComponents(dict_pref, startYear, endYear),
         ])
-    
+
+# Component to generate the content for a decade
 def getDecadeContentComponents(dict_pref, startYear, endYear):    
     return html.Div(className="flex-container-side-by-side", children=[
         html.Div(children=[
@@ -86,7 +93,7 @@ def getDecadeContentComponents(dict_pref, startYear, endYear):
         ])
     ])
 
-
+# All song recommendations are displayed in a timeline
 def getTimelineComponent(startYear, endYear, dict_pref):
     timeline_items = []
 
@@ -113,7 +120,7 @@ def getTimelineComponent(startYear, endYear, dict_pref):
 
     return timeline_container
 
-    
+# Component to generate the list of recommendations (they can be either artists or genres) 
 def getListOfRecommendationsComponents(recommendations, id_suffix, width='50%'): 
     recommendations_components = []
     for name, isBest in recommendations:
@@ -136,6 +143,7 @@ def getListOfRecommendationsComponents(recommendations, id_suffix, width='50%'):
         className='recommendations-column',
     )
 
+# Handler method when a decade change event is triggered by the user
 def handleDecadeChange(n_clicks, value):
     if n_clicks is None:
         return dash.no_update
@@ -155,7 +163,7 @@ def handleDecadeChange(n_clicks, value):
 
 
 # Helper functions to get the top songs
-# Needs to return an array containing a song, its year, if it is the favorite and details for each songs
+# Gets the top songs for a decade. Also checks which song is the best for the decade
 def get_top_songs_for_decade(start_year, end_year, dict_pref):
     song_recommendations = helper.generate_yearly_song_recommendation(dict_pref)
     songInDecade = pd.DataFrame()
@@ -176,6 +184,7 @@ def get_top_songs_for_decade(start_year, end_year, dict_pref):
 
     return songOfTheDecade
 
+# Helper functions to get the top artists and what's the best artist for the decade
 def get_top_artists_for_decade(start_year, end_year, dict_pref):
     artist_recommendations = helper.generate_yearly_artist_recommendation(dict_pref)
     artistsInDecade = pd.DataFrame()
@@ -185,7 +194,6 @@ def get_top_artists_for_decade(start_year, end_year, dict_pref):
         if not yearly_data.empty:
             artistsInDecade = pd.concat([artistsInDecade, yearly_data])
     
-    # Remove duplicates
     artistsInDecade = artistsInDecade.drop_duplicates(subset=['track_artist'])
     
     artistsInDecade = artistsInDecade.sort_values(by='similarity', ascending=False).head(5).reset_index(drop=True)
@@ -197,6 +205,7 @@ def get_top_artists_for_decade(start_year, end_year, dict_pref):
         artistsOfTheDecade.append((row['track_artist'], isBest))
     return artistsOfTheDecade
 
+# Helper functions to get the top genres and what's the best genre for the decade
 def get_top_genre_for_decade(start_year, end_year, dict_pref):
     genre_recommendations = helper.generate_yearly_genre_recommendation(dict_pref)
     genresInDecade = pd.DataFrame()
@@ -206,7 +215,6 @@ def get_top_genre_for_decade(start_year, end_year, dict_pref):
         if not yearly_data.empty:
             genresInDecade = pd.concat([genresInDecade, yearly_data])
     
-    # Remove duplicates
     genresInDecade = genresInDecade.drop_duplicates(subset=['playlist_genre'])
     
     bestGenre = genresInDecade.sort_values(by='similarity', ascending=False).head(1)
